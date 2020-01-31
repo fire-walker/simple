@@ -1,0 +1,200 @@
+/* general =================================*/
+:root {
+    --background: white;
+    --text: #444;
+    --header: #7e7e7e;
+    --header-h: black;
+    --h1: black;
+    --code-box: #0000000d;
+    --code-box-2: --text;
+}
+
+body {
+    background: var(--background);
+}
+
+.dark-theme {
+    --background: #0f0e0e;
+    --text: #cfcfcf;
+    --header-h: white;
+    --h1: white;
+    --code-box: #090909;
+    --code-box-2: #49ff76;
+    background: var(--background);
+}
+
+hr {
+    height: 1px;
+    background: #ccc;
+    max-width: 40em;
+    margin: 4em auto 0 auto;
+    text-align: center;
+    border: 0;
+}
+
+article {
+    padding-bottom: 30px;
+}
+
+.hr-h1 {
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+    padding: 0;
+    text-align: center;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 3px;
+    margin-top: 7px;
+}
+
+p {
+    padding-left: 20px;
+    font-size: 18px;
+    color: var(--text);
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+}
+
+h1 {
+    line-height: 1.2;
+    padding-left: 20px;
+    font-size: 28px;
+    color: var(--text);
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+}
+
+
+
+/* main - header section =================================*/
+.wrapper {
+    max-width: 45em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.header {
+    padding-top: 20px;
+    padding-bottom: 30px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 0px;
+    font-size: 35px;
+    text-align: center;
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+}
+
+.header a {
+    -moz-transition-duration: .3s;
+    -webkit-transition-duration: .3s;
+    -o-transition-duration: .3s;
+    transition-duration: .3s;
+    text-decoration: none;
+    color: var(--header);
+    font-weight: 700px;
+}
+
+.header a:hover {
+    color: var(--header-h);
+}
+
+
+
+/* main - article section =================================*/
+.read {
+    font-size: 18px;
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+    text-decoration: none;
+    -moz-transition-duration: .2s;
+    -webkit-transition-duration: .2s;
+    -o-transition-duration: .2s;
+    transition-duration: .2s;
+    color: #05927b;
+}
+
+.read:hover {
+    color: #03584a;
+}
+
+
+
+/* article =================================*/
+.article-p {
+    padding-left: 20px;
+    font-size: 20px;
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+    line-height: 1.4em;
+}
+
+.article-h1 {
+    line-height: 1.2;
+    padding-left: 20px;
+    padding-bottom: 20px;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--header-h);
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+}
+
+.article-header {
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-bottom: 40px;
+    margin: 0px;
+    font-size: 25px;
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+}
+
+.article-header a {
+    -moz-transition-duration: .3s;
+    -webkit-transition-duration: .3s;
+    -o-transition-duration: .3s;
+    transition-duration: .3s;
+    text-decoration: none;
+    color: var(--header);
+}
+
+.article-header a:hover {
+    color: var(--header-h);
+}
+
+.code-box {
+    background: var(--code-box) none repeat scroll 0% 0%;
+    margin: 40px 20px;
+    margin-top: 40px;
+    padding: 20px;
+    font-size: 15px;
+    color: var(--code-box-2);
+    font-family: 'Roboto Mono', monospace;
+}
+
+
+
+
+/* compatibility =================================*/
+
+@media (max-width:640px) {
+    .article-header {
+        padding-top: 20px;
+        padding-bottom: 30px;
+        padding-left: 0px;
+        padding-right: 0px;
+        font-size: 35px;
+        text-align: center;
+    }
+
+    .wrapper {
+        max-width: 40em;
+    }
+
+    hr {
+        margin: 4em 3em 0 3em;
+    }
+
+    .article-p {
+        font-size: 19px;
+        line-height: 1.35em;
+        padding-left: 20px;
+        padding-right: 25px;
+    }
+}
+
+
