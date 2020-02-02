@@ -13,8 +13,10 @@
     --header: #202020;
     --header-h: #818181;
     --h1: #535353;
-    --code-box: #0000000d;
-    --code-box-2: #12b139;
+    --code-box: #22222212;
+    --code-box-1: #12b139;
+    --code-box-2: #7d7d7d;
+    --code-box-3: #2183ec;
     --article-h1: #2e2e2e;
     --article-header: #c9c9c9;
     --article-header-h: #494949;
@@ -25,12 +27,14 @@ body {
 }
 
 .dark-theme {
-    --background: #0f0e0e;
+    --background: #131217;
     --text: #cfcfcf;
     --header: white;    
     --h1: #7e7e7e;
-    --code-box: #090909;
-    --code-box-2: #49ff76;
+    --code-box: #0c0d11;
+    --code-box-1: #49ff76;
+    --code-box-2: #5b5b5b;
+    --code-box-3: #30dbdb;
     --article-h1: #e0e0e0;
     --article-header: #383838;
     --article-header-h: #999999;
@@ -169,7 +173,7 @@ h1 {
     margin: 30px 0px;
     padding: 20px;
     font-size: 15px;
-    color: var(--code-box-2);
+    color: var(--code-box-1);
     font-family: 'Roboto Mono', monospace;
     display: block;
     border-radius: 4px;
@@ -177,6 +181,14 @@ h1 {
     overflow: auto;
     box-sizing: border-box;
     word-break: normal;
+}
+
+.code-box2 {
+    color: var(--code-box-2);
+}
+
+.code-box3 {
+    color: var(--code-box-3);
 }
 
 .article-p {
