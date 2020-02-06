@@ -81,14 +81,33 @@
 
     
 # print(code2)
-line = [1, 2, 3, 4, 5, 6, 7, 8]
+# line = [1, 2, 3, 4, 5, 6, 7, 8]
 
-thing = {2 : 'thing',
-         5 : 'thing'}
+# thing = {2 : 'thing',
+#          5 : 'thing'}
 
 
-t = list(thing.keys())
-for i in sorted(t, reverse=True):
-    del line[i]
+# t = list(thing.keys())
+# for i in sorted(t, reverse=True):
+#     del line[i]
 
-print(line)
+# print(line)
+from datetime import datetime
+from git import Repo
+import os
+
+os.chdir(r'E:/Code\Sites')
+
+
+now = datetime.now()
+time = now.strftime("%Y/%m/%d, %H:%M:%S")
+
+
+repo_dir = r'just-write.github.io'
+repo = Repo(repo_dir)
+file = r'index.html'
+commit_message = 'a simple message'
+repo.index.add(file)
+repo.index.commit(time)
+origin = repo.remote('origin')
+origin.push()

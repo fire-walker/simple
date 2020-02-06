@@ -1,5 +1,7 @@
 import os
+from git import Repo
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 
 title = input("Enter the title name: ")
@@ -105,8 +107,8 @@ for x,y in code.items():
 
     for i in words:
         if i.startswith('<') and i.endswith('>'):
-            i = i.replace('>', '')
-            i = i.replace('<', '')
+            i = i.replace('>', ' ')
+            i = i.replace('<', ' ')
 
             soup = BeautifulSoup(i, features='html.parser')
             tag = soup.new_tag('spam')
@@ -164,6 +166,20 @@ with open(os.path.join(__location__, '../{}.html' .format(title.lower().replace(
     file.write(str(soup))
 
 
+os.chdir(r'E:/Code\Sites')
+
+now = datetime.now()
+time = now.strftime("%Y/%m/%d, %H:%M:%S")
+
+
+repo_dir = r'just-write.github.io'
+repo = Repo(repo_dir)
+file = [r'index.html', r'{}.html' .format(title.lower().replace(' ', '-'))]
+commit_message = time + f": added new post {title.lower().replace(' ', '-')}"
+repo.index.add(file)
+repo.index.commit(time)
+origin = repo.remote('origin')
+origin.push()
 
 
 

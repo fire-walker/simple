@@ -6,6 +6,4 @@ Possimus mollitia ex ipsa. Molestias eum aspernatur tempore.
 
 `docker <run> static-site`
 
-`pip <install> discord.py`
-
 Laboriosam odit reiciendis omnis officia itaque sit vel numquam voluptatibus.
