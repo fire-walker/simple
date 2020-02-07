@@ -1,9 +1,14 @@
 Sup, mate
 
 Lorem ipsum.
+Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rerum quis quasi ratione eius cumque, vel magni mollitia similique? Rerum saepe est error voluptas tempora temporibus molestias, sunt ratione itaque veritatis quasi reiciendis nisi inventore quia sint dicta qui officiis accusantium dolores illum nihil obcaecati iure necessitatibus. Veniam quidem suscipit eos molestiae error, cum pariatur ea perferendis rem voluptatem quisquam natus odio ullam doloremque sed delectus repellendus voluptas eaque quibusdam quod.
 
-Possimus mollitia ex ipsa. Molestias eum aspernatur tempore.
-
-`docker <run> static-site`
+`docker <-run-> static-site`
 
 Laboriosam odit reiciendis omnis officia itaque sit vel numquam voluptatibus.
+Possimus mollitia ex ipsa. Molestias eum aspernatur tempore.
+
+`sudo apt-get <-install-> neofetch`
+
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum repellat laboriosam amet saepe ipsum molestias, similique minus, quam expedita corrupti cum nisi voluptas numquam modi doloremque quia, nostrum error eaque.
+

@@ -106,20 +106,22 @@ for x,y in code.items():
     box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
 
     for i in words:
-        if i.startswith('<') and i.endswith('>'):
-            i = i.replace('>', ' ')
-            i = i.replace('<', ' ')
+        if i.startswith('<-') and i.endswith('->'):
+            i = i.replace('->', '')
+            i = i.replace('<-', '')
 
             soup = BeautifulSoup(i, features='html.parser')
-            tag = soup.new_tag('spam')
+            tag = soup.new_tag('span')
             tag['class'] = 'code-box3'
             soup.string.wrap(tag)
             box.p.append(soup)
+            box.p.append(' ')
         else:
             soup = BeautifulSoup(i, features='html.parser')
             box.p.append(soup)
+            box.p.append(' ')
     
-    box.p.insert(0, BeautifulSoup("<spam class='code-box2'>$</spam>", features='html.parser'))
+    box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
     code2[x] = box
 
 # delete the codebox lines from the list
@@ -166,22 +168,19 @@ with open(os.path.join(__location__, '../{}.html' .format(title.lower().replace(
     file.write(str(soup))
 
 
-os.chdir(r'E:/Code\Sites')
+# os.chdir(r'E:/Code\Sites')
 
-now = datetime.now()
-time = now.strftime("%Y/%m/%d, %H:%M:%S")
-
-
-repo_dir = r'just-write.github.io'
-repo = Repo(repo_dir)
-file = [r'index.html', r'{}.html' .format(title.lower().replace(' ', '-'))]
-commit_message = time + f": added new post {title.lower().replace(' ', '-')}"
-repo.index.add(file)
-repo.index.commit(time)
-origin = repo.remote('origin')
-origin.push()
+# now = datetime.now()
+# time = now.strftime("%Y/%m/%d, %H:%M:%S")
 
 
+# repo_dir = r'just-write.github.io'
+# repo = Repo(repo_dir)
+# file = [r'index.html', r'{}.html' .format(title.lower().replace(' ', '-'))]
+# commit_message = time + f": added new post {title.lower().replace(' ', '-')}"
+# repo.index.add(file)
+# repo.index.commit(time)
+# origin = repo.remote('origin')
+# origin.push()
 
-# you know what, i could also make a front end for this program. huh
-# of a whole site manager suite
+
