@@ -129,7 +129,7 @@ h1 {
 /* main - article section =================================*/
 .read {
     font-size: 18px;
-    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+    font-family: 'Lato', sans-serif;
     text-decoration: none;
     -moz-transition-duration: .2s;
     -webkit-transition-duration: .2s;
