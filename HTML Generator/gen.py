@@ -64,7 +64,14 @@ while True:
 
 
         # the index file
-        body = BeautifulSoup('<article></article>', features='html.parser')
+        file = open(os.path.join(__location__, '../index.html'), 'r+')
+        soup = BeautifulSoup(file, features="html.parser")
+        
+        #find the most recent identifier number
+        tag = soup.find_all('article')
+        num = int(tag[0]['class'][0]) + 1
+
+        body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
 
         # create the h1 tag  and delete it from the list
         header = BeautifulSoup(line[0], features='html.parser')
@@ -114,24 +121,21 @@ while True:
                 f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
             body.article.append(soup)
 
-        # open the source file
-        with open(os.path.join(__location__, '../index.html'), 'r') as file:
-            soup = BeautifulSoup(file, features="html.parser")
 
         # find the editing location of the source file
         tag = soup.find('div', {'class': 'wrapper'})
         tag.insert(0, body)
 
         # save the new edited source file
-        with open(os.path.join(__location__, '../index.html'), 'w') as file:
-            file.write(str(soup))
+        file.write(str(soup))
+        file.close
 
 
 
 
 
         # the seperate post
-        body = BeautifulSoup('<article></article>', features='html.parser')
+        body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
 
         # create the whole code box
         code = {}
@@ -222,7 +226,7 @@ while True:
         __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
         
         # filter .html files
-        places = [f for f in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, f)) and f.endswith('.html')]
+        places = [f for f in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, f)) and f.endswith('.html') and not f.startswith('index')]
          
         questions2 = {
             'type': 'list',
@@ -239,6 +243,10 @@ while True:
         with open(os.path.join(__location__, answer), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
 
+        #find the identifier tag
+        tag = body.find('article')
+        num = int(tag[0]['class'][0])
+
         # locate the wrapper and save it one a txt
         tag = body.find('div', {'class': 'wrapper'})
         with open(os.path.join(__location__, 'temp.txt'), 'w') as file:
@@ -252,23 +260,88 @@ while True:
             import texteditor
             loc = os.path.join(__location__, 'temp.txt')
             texteditor.open(filename=loc)
-        
+
         print("Updating post...")
+
         # read the temp with edited data
         with open(os.path.join(__location__, 'temp.txt'), 'r') as file:
             soup = BeautifulSoup(file.read(), features='html.parser')
 
         # replace old with new
-        tag.replace_with(soup)
+        tag.clear()
+        tag.append(soup)
         os.remove(os.path.join(__location__, 'temp.txt'))
 
         # save the edited data
         with open(os.path.join(__location__, answer), 'w') as file:
             file.write(str(body))
+        
+
+        #updating the index file in congruence to the post
+        updated_body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
+
+        #add the new header
+        updated_body.article.append(tag.h1)
+
+        #grab all the new paras
+        all_paragraphs = tag.find_all('p', {'class': 'article-p'})
+
+        #add the updated paragraphs
+        x = 0
+        for i in all_paragraphs[0].string.split():
+            x += 1
+
+        if x < 60:
+            updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
+            updated_paragraph.p.append(all_paragraphs[0].string)
+            updated_paragraph.p.append(all_paragraphs[1].string)
+            updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
+            updated_body.append(updated_paragraph)
+        
+        elif x > 100:
+            paragraph = ''
+            updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
+            sentenses = list(filter(None, all_paragraphs[0].string.split('.')))
+            for i in sentenses:
+                paragraph = (paragraph + i + '.')
+                x = 0
+                for i in paragraph.split():
+                    x += 1
+                if x > 60:
+                    break
+
+            updated_paragraph.p.append(paragraph)
+            updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}.html' class='read'> Read more...</a>", features='html.parser'))
+            updated_body.append(updated_paragraph)
+
+        else:
+            updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
+            updated_paragraph.p.append(all_paragraphs[0].string)
+            updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
+            updated_body.append(updated_paragraph)
+
+
+
+        #open up the index file for modifications
+        with open(os.path.join(__location__, '../index.html'), 'r') as file:
+            index_whole = BeautifulSoup(file, features="html.parser")
+
+        #find and kill the outdated reference
+        filtered_index = index_whole.find('article', class_=num)
+        filtered_index.decompose()
+
+        #add the modifications to the whole file
+        wrapper = index_whole.find('div', {'class': 'wrapper'})
+        wrapper.insert(num, updated_body)
+
+        #save the modifications
+        with open(os.path.join(__location__, '../index.html'), 'r') as file:
+            file.write(str(index_whole))
+
 
         time.sleep(2)
-        print("Successfully edited post.")
-        time.sleep(2)
+        print("Successfully edited post and index file.")
+        time.sleep(1)
 
 
 

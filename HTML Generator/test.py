@@ -136,7 +136,8 @@
 # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 # print(__location__)
-from bs4 import BeautifulSoup
+# 
+
 # enter = """
 #     <div class='something'>
 #     <div class = "wrapper" >
@@ -187,7 +188,7 @@ from bs4 import BeautifulSoup
 
 # body = BeautifulSoup(body, features='html.parser')
 # tag.replace_with(body)
-import os
+# import os
 # # print(soup)
 # from bs4 import UnicodeDammit
 # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
@@ -203,16 +204,28 @@ import os
 
 # print(soup.decode("windows-1252"))
 # print(soup.decode('utf8'))
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 
-base_files = (file for file in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, file)))
+# base_files = (file for file in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, file)))
 
-temp_child = (file for file in os.listdir(os.path.join(__location__, r'HTML Generator')) if os.path.isfile(os.path.join(os.path.join(__location__, r'HTML Generator'), file)))
-children = []
-for i in temp_child:
-    i = os.path.join(r'HTML Generator', i)
-    children.append(i)
+# temp_child = (file for file in os.listdir(os.path.join(__location__, r'HTML Generator')) if os.path.isfile(os.path.join(os.path.join(__location__, r'HTML Generator'), file)))
+# children = []
+# for i in temp_child:
+#     i = os.path.join(r'HTML Generator', i)
+#     children.append(i)
 
-files = children + list(base_files)
-print(files)
+# files = children + list(base_files)
+# print(files)
+import os
+from bs4 import BeautifulSoup
+
+
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+with open(os.path.join(__location__, '../hello_v2.html'), 'r') as file:
+    soup = BeautifulSoup(file, features="html.parser")
+
+
+tag = soup.find_all('p', {'class': 'article-p'})
+
+print(tag[0].string)
