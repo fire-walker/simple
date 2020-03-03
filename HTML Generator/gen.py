@@ -83,22 +83,7 @@ while True:
         for i in line[1].split():
             x += 1
 
-        if x < 60:
-            soup = BeautifulSoup('<p></p>', features='html.parser')
-            if not line[2].startswith('`'):
-                soup.p.append(line[2])
-                soup.p.append(BeautifulSoup(f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
-                thing = BeautifulSoup('<p></p>', features='html.parser')
-                thing.p.append(line[1])
-                soup.insert(0, thing)
-            else:
-                thing = BeautifulSoup('<p></p>', features='html.parser')
-                thing.p.append(line[1])
-                soup.insert(0, thing)
-                soup.p.append(BeautifulSoup(f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
-            body.article.append(soup)
-
-        elif x > 100:
+        if x > 70:
             thing = ''
             parts = list(filter(None, line[1].split('.')))
             for i in parts:
@@ -106,7 +91,7 @@ while True:
                 x = 0
                 for i in thing.split():
                     x += 1
-                if x > 60:
+                if x > 70:
                     break
             soup = BeautifulSoup('<p></p>', features='html.parser')
             soup.p.append(thing)
@@ -244,7 +229,7 @@ while True:
             body = BeautifulSoup(file, features='html.parser')
 
         #find the identifier tag
-        tag = body.find('article')
+        tag = body.find_all('article')
         num = int(tag[0]['class'][0])
 
         # locate the wrapper and save it one a txt
@@ -268,8 +253,7 @@ while True:
             soup = BeautifulSoup(file.read(), features='html.parser')
 
         # replace old with new
-        tag.clear()
-        tag.append(soup)
+        tag.replace_with(soup)
         os.remove(os.path.join(__location__, 'temp.txt'))
 
         # save the edited data
@@ -281,7 +265,9 @@ while True:
         updated_body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
 
         #add the new header
-        updated_body.article.append(tag.h1)
+        header = BeautifulSoup("<h1></h1>", features="html.parser")
+        header.h1.append(tag.h1.string)
+        updated_body.article.append(header)
 
         #grab all the new paras
         all_paragraphs = tag.find_all('p', {'class': 'article-p'})
@@ -291,14 +277,7 @@ while True:
         for i in all_paragraphs[0].string.split():
             x += 1
 
-        if x < 60:
-            updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
-            updated_paragraph.p.append(all_paragraphs[0].string)
-            updated_paragraph.p.append(all_paragraphs[1].string)
-            updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
-            updated_body.append(updated_paragraph)
-        
-        elif x > 100:
+        if x > 70:
             paragraph = ''
             updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
             sentenses = list(filter(None, all_paragraphs[0].string.split('.')))
@@ -307,23 +286,23 @@ while True:
                 x = 0
                 for i in paragraph.split():
                     x += 1
-                if x > 60:
+                if x > 70:
                     break
 
             updated_paragraph.p.append(paragraph)
             updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}.html' class='read'> Read more...</a>", features='html.parser'))
-            updated_body.append(updated_paragraph)
+            updated_body.article.append(updated_paragraph)
 
         else:
             updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
             updated_paragraph.p.append(all_paragraphs[0].string)
             updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
-            updated_body.append(updated_paragraph)
+            updated_body.article.append(updated_paragraph)
 
 
 
         #open up the index file for modifications
-        with open(os.path.join(__location__, '../index.html'), 'r') as file:
+        with open(os.path.join(__location__, 'index.html'), 'r') as file:
             index_whole = BeautifulSoup(file, features="html.parser")
 
         #find and kill the outdated reference
@@ -332,10 +311,12 @@ while True:
 
         #add the modifications to the whole file
         wrapper = index_whole.find('div', {'class': 'wrapper'})
-        wrapper.insert(num, updated_body)
+        post_after = wrapper.find('article', class_=f'{num - 1}')
+        post_after.insert_before(updated_body)
+
 
         #save the modifications
-        with open(os.path.join(__location__, '../index.html'), 'r') as file:
+        with open(os.path.join(__location__, 'index.html'), 'w') as file:
             file.write(str(index_whole))
 
 
@@ -382,9 +363,3 @@ while True:
         origin.push()
         print("Successfully pushed to Origin")
         
-
-        
-
-
-# add curses shit to like clear the terminal man, beauty prevails
-

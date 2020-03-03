@@ -221,11 +221,17 @@ import os
 from bs4 import BeautifulSoup
 
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-with open(os.path.join(__location__, '../hello_v2.html'), 'r') as file:
-    soup = BeautifulSoup(file, features="html.parser")
+# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# with open(os.path.join(__location__, '../index.html'), 'r') as file:
+#     soup = BeautifulSoup(file, features="html.parser")
 
 
-tag = soup.find_all('p', {'class': 'article-p'})
+# tag = soup.find('div', {'class': 'wrapper'})
 
-print(tag[0].string)
+thing = BeautifulSoup("<h1 class='thing'>this is a thing mate</h1>", features="html.parser")
+
+some = BeautifulSoup("<h1></h1>", features="html.parser")
+
+some.h1.append(thing.string)
+
+print(some)

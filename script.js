@@ -10,8 +10,13 @@ $(document).ready(function () {
     function updateTheme() {
         if (darkTheme) {
             $("body").addClass("dark-theme");
+            $("body").removeClass("dynamic-body");
+            $("body").addClass("static-body");
+
         } else {
             $("body").removeClass("dark-theme");
+            $("body").removeClass("static-body");
+            $("body").addClass("dynamic-body");
         }
     }
 
