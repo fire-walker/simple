@@ -8,7 +8,7 @@
 
 /* general =================================*/
 :root {
-    --background: #f8f7f1;
+    --background: #f8f3ef;
     --text: #303030;
     --header: #202020;
     --header-h: #818181;
@@ -39,8 +39,10 @@
 
 .dynamic-body {
     background-color: var(--background);
-    -webkit-transition: background-color 0.2s ease-in;
-    transition: background-color 0.2s ease-in;
+    -moz-transition: background-color 0.3s ease-in;;
+    -o-transition: background-color 0.3s ease-in;;
+    -webkit-transition: background-color 0.3s ease-in;
+    transition: background-color 0.3s ease-in;
 }
 
 .static-body {
@@ -76,8 +78,6 @@ article {
 p {
     font-size: 18px;
     color: var(--text);
-    -webkit-transition: color 0.2s ease-in;
-    transition: color 0.2s ease-in;
     font-family: 'Lato', sans-serif;
 }
 
@@ -86,8 +86,6 @@ h1 {
     margin-bottom: 0;
     font-size: 26px;
     color: var(--h1);
-    -webkit-transition: color 0.2s ease-in;
-    transition: color 0.2s ease-in;
     font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
 }
 
