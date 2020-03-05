@@ -8,6 +8,7 @@
 
 /* general =================================*/
 :root {
+    --hr: #ececec, #bbbaba, #ececec;
     --background: #f8f3ef;
     --text: #303030;
     --header: #202020;
@@ -23,6 +24,7 @@
 }
 
 .dark-theme {
+    --hr: #19181f, #ccc, #19181f;
     --background: #131217;
     --text: #cfcfcf;
     --header: white;
@@ -51,11 +53,11 @@
 
 hr {
     height: 1px;
-    background: #ccc;
     max-width: 35em;
     margin: 4em auto 0 auto;
     text-align: center;
     border: 0;
+    background-image: linear-gradient(to right, var(--hr));
 }
 
 article {
