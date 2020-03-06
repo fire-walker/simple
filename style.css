@@ -41,10 +41,10 @@
 
 .dynamic-body {
     background-color: var(--background);
-    -moz-transition: background-color 0.3s ease-in;;
-    -o-transition: background-color 0.3s ease-in;;
-    -webkit-transition: background-color 0.3s ease-in;
-    transition: background-color 0.3s ease-in;
+    -moz-transition: background-color 0.2s ease-in;;
+    -o-transition: background-color 0.2s ease-in;;
+    -webkit-transition: background-color 0.2s ease-in;
+    transition: background-color 0.2s ease-in;
 }
 
 .static-body {
@@ -237,6 +237,10 @@ h1 {
 
     .article-header {
         padding-left: 20px;
+    }
+
+    .dark-theme {
+        --background: #191822;
     }
 
 

@@ -1,8 +1,8 @@
 var transition = {
-    '-moz-transition': 'color 0.3s ease-in',
-    '-o-transition': 'color 0.3s ease-in',
-    '-webkit-transition': 'color 0.3s ease-in',
-    'transition': 'color 0.3s ease-in'
+    '-moz-transition': 'color 0.2s ease-in',
+    '-o-transition': 'color 0.2s ease-in',
+    '-webkit-transition': 'color 0.2s ease-in',
+    'transition': 'color 0.2s ease-in'
 };
 
 var nothing = {
