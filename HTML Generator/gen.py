@@ -13,8 +13,6 @@ from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
 
 
-# screen = curses.initscr()
-
 
 style = style_from_dict({
     Token.QuestionMark: '#000',
