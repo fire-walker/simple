@@ -167,71 +167,198 @@
 #               Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga nihil nobis reprehenderit
 #                error provident. Esse labore eveniet ducimus nihil vel dignissimos delectus enim eaque amet accusantium
 #                 porro nesciunt, doloribus maxime similique sint tenetur ad? Illum deleniti tenetur, voluptatum quis,
-#                 architecto unde omnis est natus voluptatibus reprehenderit molestiae quasi dignissimos error!
-#             </p >
-#         </article >
+# #                 architecto unde omnis est natus voluptatibus reprehenderit molestiae quasi dignissimos error!
+# #             </p >
+# #         </article >
 
-#         <hr / >
-#         <h1 class = "hr-h1">the end</h1>
-#     </div >
-#     </div>
-# """
-# soup = BeautifulSoup(enter, features='html.parser')
+# #         <hr / >
+# #         <h1 class = "hr-h1">the end</h1>
+# #     </div >
+# #     </div>
+# # """
+# # soup = BeautifulSoup(enter, features='html.parser')
 
-# tag = soup.find('div', {'class': 'wrapper'})
+# # tag = soup.find('div', {'class': 'wrapper'})
 
-# body = """ 
-# <div class="wrapper">
-#     <h1>Hello World</h1>
-# </div>
-# """
+# # body = """ 
+# # <div class="wrapper">
+# #     <h1>Hello World</h1>
+# # </div>
+# # """
 
-# body = BeautifulSoup(body, features='html.parser')
-# tag.replace_with(body)
+# # body = BeautifulSoup(body, features='html.parser')
+# # tag.replace_with(body)
+# # import os
+# # # print(soup)
+# # from bs4 import UnicodeDammit
+# # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+
+
+# # with open(os.path.join(__location__, 'temp.txt'), 'r', encoding='utf8') as file:
+# #     soup = BeautifulSoup(file, features='html.parser')
+
+
+# # print(str(soup))
+
+
+
+# # print(soup.decode("windows-1252"))
+# # print(soup.decode('utf8'))
+# # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+
+
+# # base_files = (file for file in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, file)))
+
+# # temp_child = (file for file in os.listdir(os.path.join(__location__, r'HTML Generator')) if os.path.isfile(os.path.join(os.path.join(__location__, r'HTML Generator'), file)))
+# # children = []
+# # for i in temp_child:
+# #     i = os.path.join(r'HTML Generator', i)
+# #     children.append(i)
+
+# # files = children + list(base_files)
+# # print(files)
 # import os
-# # print(soup)
-# from bs4 import UnicodeDammit
-# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-
-
-# with open(os.path.join(__location__, 'temp.txt'), 'r', encoding='utf8') as file:
-#     soup = BeautifulSoup(file, features='html.parser')
-
-
-# print(str(soup))
+# from bs4 import BeautifulSoup
+# import subprocess
 
 
 
-# print(soup.decode("windows-1252"))
-# print(soup.decode('utf8'))
-# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 
-# base_files = (file for file in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, file)))
-
-# temp_child = (file for file in os.listdir(os.path.join(__location__, r'HTML Generator')) if os.path.isfile(os.path.join(os.path.join(__location__, r'HTML Generator'), file)))
-# children = []
-# for i in temp_child:
-#     i = os.path.join(r'HTML Generator', i)
-#     children.append(i)
-
-# files = children + list(base_files)
-# print(files)
-import os
-from bs4 import BeautifulSoup
+# __location__ = os.path.realpath(os.path.join(
+#     os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 
-# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-# with open(os.path.join(__location__, '../index.html'), 'r') as file:
-#     soup = BeautifulSoup(file, features="html.parser")
+# with open(os.path.join(__location__, 'hello_v2.html'), 'r') as file:
+#     body = BeautifulSoup(file, features='html.parser')
+
+# #find the identifier tag
+# tag = body.find_all('article')[0]
+# num = int(tag['class'][0])
 
 
-# tag = soup.find('div', {'class': 'wrapper'})
+# output = []
 
-thing = BeautifulSoup("<h1 class='thing'>this is a thing mate</h1>", features="html.parser")
+# h1 = ' '.join(tag.find('h1').string.split())
+# output.append(h1)
 
-some = BeautifulSoup("<h1></h1>", features="html.parser")
+# paragraphs = tag.find_all('p')
 
-some.h1.append(thing.string)
+# for i in paragraphs:
+#     if i['class'][0] == 'article-p':
+#         p = ' '.join(i.string.split())
+#         output.append(p)
 
-print(some)
+#     else:
+#         box_checker = []
+#         code_box3 = i.find_all('span', {'class' : 'code-box3'})
+        
+#         for j in code_box3:
+#             box_checker.append(j.string)
+
+#         words = i.get_text(' ').split(' ')
+#         for i,val in enumerate(words):
+#             if val == '$':
+#                 words.remove(val)
+                
+#             elif val in box_checker:
+#                 words[i] = f'`{val}`'
+        
+#         out = ' '.join(words)
+#         output.append(f'<-{out}->')
+
+
+# output = '\n\n'.join(output)
+# with open(os.path.join(__location__, 'temp.txt'), 'w') as file:
+#     file.write(output)
+
+# with open(os.path.join(__location__, 'temp.txt'), 'r') as file:
+#     lines = file.readlines()
+# # 22222222222222222222222222222
+
+# for i,j in enumerate(lines):
+#     lines[i] = j.replace('\n', '').strip()
+
+
+
+
+# # the seperate post
+# article = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
+
+# # create the whole code box
+# code = {}
+# code2 = {}
+# x = 0
+# for i in lines:
+#     if i.startswith('<-') and i.endswith('->'):
+#         i = i.replace('<-', '')
+#         i = i.replace('->', '')
+#         code[x] = i
+#     x += 1
+
+# for x, y in code.items():
+#     words = y.split(' ')
+#     box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
+
+#     for i in words:
+#         if i.startswith('`') and i.endswith('`'):
+#             i = i.replace('`', '')
+
+#             soup = BeautifulSoup(i, features='html.parser')
+#             box3 = soup.new_tag('span')
+#             box3['class'] = 'code-box3'
+#             soup.string.wrap(box3)
+#             box.p.append(soup)
+#             box.p.append(' ')
+#         else:
+#             soup = BeautifulSoup(i, features='html.parser')
+#             box.p.append(soup)
+#             box.p.append(' ')
+
+#     box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
+#     code2[x] = box
+
+# # delete the codebox lines from the list
+# t = list(code2.keys())
+# for i in sorted(t, reverse=True):
+#     del lines[i]
+
+# # create the h1 tag with the class and delete it
+# header = BeautifulSoup(lines[0], features='html.parser')
+# header_tag = header.new_tag('h1')
+# header_tag['class'] = 'article-h1'
+# header.string.wrap(header_tag)
+# article.article.append(header)
+# del lines[0]
+
+# # tag the remaining paragraphs
+# for i in lines:
+#     soup = BeautifulSoup(i, features='html.parser')
+#     para_tag = soup.new_tag('p')
+#     para_tag['class'] = 'article-p'
+#     soup.string.wrap(para_tag)
+#     article.article.append(soup)
+
+# # insert the codeboxes to the body
+# for x, y in code2.items():
+#     article.article.insert(x, y)
+
+# # also make a thing where you can change the title name also and the index page descrpititon for the said file bmake this an optioneal question after finishing edits obn the fle at hand, so you can update it as per the changed stuff and then make ffurther adjustments
+
+
+# wrapper = body.find('div', {'class': 'wrapper'})
+# wrapper.clear()
+# wrapper.append(article)
+
+
+# os.remove(os.path.join(__location__, 'temp.txt'))
+
+# save the edited data
+# with open(os.path.join(__location__, answer), 'w') as file:
+#     file.write(str(body))
+
+test = '       this is    a thing   mate    '
+
+test = "".join(test.split())
+
+print(test)
