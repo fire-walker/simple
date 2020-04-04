@@ -14,6 +14,7 @@
     --header: #202020;
     --header-h: #818181;
     --h1: #535353;
+    --link: #aedfd7;
     --code-box: #22222212;
     --code-box-1: #606060;
     --code-box-2: #7d7d7d;
@@ -29,6 +30,7 @@
     --text: #cfcfcf;
     --header: white;
     --h1: #7e7e7e;
+    --link: #03463b;
     --code-box: #0c0d11;
     --code-box-1: #49ff76;
     --code-box-2: #5b5b5b;
@@ -89,6 +91,20 @@ h1 {
     font-size: 26px;
     color: var(--h1);
     font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+}
+
+.link {
+    background: linear-gradient(to bottom, var(--link) 0%, var(--link) 100%);
+    background-position: 0 100%;
+    background-repeat: repeat-x;
+    background-size: 2px 2px;
+    color: var(--text);
+    text-decoration: none;
+    transition: background-size .6s ease;
+}
+
+.link:hover {
+    background-size: 4px 50px;
 }
 
 
@@ -204,7 +220,7 @@ h1 {
 
 .article-p {
     font-size: 19px;
-    line-height: 1.4em;
+    line-height: 1.42em;
 }
 
 .article-h1 {

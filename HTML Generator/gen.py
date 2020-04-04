@@ -381,9 +381,10 @@ while True:
             article.article.insert(x, y)
 
         # insert the edited article into the page wrapper
+        arti = body.find('article')
+        arti.decompose()
         wrapper = body.find('div', {'class': 'wrapper'})
-        wrapper.clear()
-        wrapper.append(article)
+        wrapper.insert(0, article)
 
         os.remove(os.path.join(__location__, 'temp.txt'))
 
@@ -391,6 +392,8 @@ while True:
         with open(os.path.join(__location__, answer), 'w') as file:
             file.write(str(body))
         
+
+
 
 
 
@@ -443,7 +446,7 @@ while True:
                         break
 
                 updated_paragraph.p.append(paragraph)
-                updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}.html' class='read'> Read more...</a>", features='html.parser'))
+                updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
                 updated_body.article.append(updated_paragraph)
 
             else:
