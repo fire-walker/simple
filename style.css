@@ -3,6 +3,11 @@
 --code-box1 : main text 
 --code-box2 : the syntax $
 --code-box2 : hot words
+
+<-code `thing` boxes->
+<:links--https://www.thing.com:>
+<~snippets~>
+
 */
 
 
@@ -15,13 +20,16 @@
     --header-h: #818181;
     --h1: #535353;
     --link: #aedfd7;
+    --code-snippet: #22222212;
+    --code-snippet-border: #c8c8c8;
     --code-box: #22222212;
-    --code-box-1: #606060;
+    --code-box-1: #2f2f2f;
     --code-box-2: #7d7d7d;
     --code-box-3: #3211a8;
     --article-h1: #2e2e2e;
     --article-header: #c9c9c9;
     --article-header-h: #494949;
+
 }
 
 .dark-theme {
@@ -31,6 +39,8 @@
     --header: white;
     --h1: #7e7e7e;
     --link: #03463b;
+    --code-snippet: #242424;
+    --code-snippet-border: #262626;
     --code-box: #0c0d11;
     --code-box-1: #49ff76;
     --code-box-2: #5b5b5b;
@@ -193,6 +203,16 @@ h1 {
 
 .article-header a:hover {
     color: var(--article-header-h);
+}
+
+.code-snippet{
+    border: 1px solid var(--code-snippet-border);
+    background-color: var(--code-snippet);
+    border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace;
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 90%;
 }
 
 .code-box {
