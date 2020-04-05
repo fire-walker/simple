@@ -27,144 +27,46 @@ questions = {
     'type': 'list',
     'name': 'item',
     'message': "What's your purpose?",
-    'choices': ['Create Post', 'Edit Post', 'Commit Changes'],
+    'choices': ['Create Post', 'Edit Post', 'Delete Post'],
     'filter': lambda val: val.lower()
 }
 
-custom_desc = {
-    'type': 'list',
-    'name': 'item',
-    'message': "Add custom description",
-    'choices': ['Yes', 'No'],
-    'filter': lambda val: val.lower()
-}
-
-custom_title = {
-    'type': 'list',
-    'name': 'item',
-    'message': "Add custom title name",
-    'choices': ['Yes', 'No'],
-    'filter': lambda val: val.lower()
-}
-
-
-while True:
-    answers = prompt(questions, style=style)
-
-    if answers['item'] == "create post":
+# function to create and edit the seperate post file
+def seperate_post(filename, num, title):
+        if title.endswith('.html'):
+            title = title.replace('.html', '')
         
-        title = input("Enter the title/file name: ")
-
+        # find and read the file
         __location__ = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
-            
-        with open(os.path.join(__location__, 'input.txt'), 'r') as file:
-            lines = file.readlines()
 
+        with open(os.path.join(__location__, filename), 'r') as file:
+            input_data = file.readlines()
+            
         # clean the input data
         line = []
-        for i in lines:
+        for i in input_data:
             line.append(i.replace('\n', '').strip())
 
-        line = list(filter(None, line))
-
-        # custom description
-        custom_desc = prompt(custom_desc, style=style)
-
-        #custom title
-        custom_title = prompt(custom_title, style=style)
-
-        print('Creating post...')
-
-
-
-
-        # the index file
-        with open(os.path.join(__location__, '../index.html'), 'r') as file:
-            main_index = BeautifulSoup(file, features="html.parser")
+        cleaned_input = list(filter(None, line))
         
-        #find the most recent identifier number
-        tag = main_index.find_all('article')
-        num = int(tag[0]['class'][0]) + 1
-
-        body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
-
-        # create the h1 tag  and delete it from the list
-        if custom_title['item'].lower() == 'no':
-            header = BeautifulSoup(line[0], features='html.parser')
-            header.string.wrap(header.new_tag('h1'))
-            body.article.append(header)
-        
-        else:
-            header = BeautifulSoup(input('Enter title: '), features='html.parser')
-            header.string.wrap(header.new_tag('h1'))
-            body.article.append(header)
-
-        # tag the paragraph and read more and add them to the body
-        if custom_desc['item'].lower() == 'no':
-            x = 0
-            for i in line[1].split():
-                x += 1
-
-            if x > 70:
-                thing = ''
-                parts = list(filter(None, line[1].split('.')))
-                for i in parts:
-                    thing = (thing + i + '.')
-                    x = 0
-                    for i in thing.split():
-                        x += 1
-                    if x > 70:
-                        break
-                soup = BeautifulSoup('<p></p>', features='html.parser')
-                soup.p.append(thing)
-                soup.p.append(BeautifulSoup(
-                    f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
-                body.article.append(soup)
-
-            else:
-                soup = BeautifulSoup('<p></p>', features='html.parser')
-                soup.p.append(line[1])
-                soup.p.append(BeautifulSoup(
-                    f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
-                body.article.append(soup)
-
-        else:
-            desc = BeautifulSoup(input('Enter description:\n'), features='html.parser')
-            soup = BeautifulSoup('<p></p>', features='html.parser')
-            soup.p.append(desc)
-            soup.p.append(BeautifulSoup(f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
-            body.article.append(soup)
-
-        # find the editing location of the source file
-        tag = main_index.find('div', {'class': 'wrapper'})
-        tag.insert(0, body)
-
-        # save the new edited source file
-        with open(os.path.join(__location__, '../index.html'), 'w') as file:
-            file.write(str(main_index))
-
-
-
-
-
-        # the seperate post
         body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
 
         # create the whole code box
         code = {}
         code2 = {}
         x = 0
-        for i in line:
+        for i in cleaned_input:
             if i.startswith('<-') and i.endswith('->'):
                 i = i.replace('<-', '')
                 i = i.replace('->', '')
                 code[x] = i
             x += 1
 
-        for x,y in code.items():
+        for x, y in code.items():
             words = y.split(' ')
-            box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
+            box = BeautifulSoup("<p class='code-box'></p>",
+                                features='html.parser')
 
             for i in words:
                 i = "".join(i.split())
@@ -181,34 +83,34 @@ while True:
                     soup = BeautifulSoup(i, features='html.parser')
                     box.p.append(soup)
                     box.p.append(' ')
-            
-            box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
+
+            box.p.insert(0, BeautifulSoup(
+                "<span class='code-box2'>$ </span>", features='html.parser'))
             code2[x] = box
 
         # delete the codebox lines from the list
         t = list(code2.keys())
         for i in sorted(t, reverse=True):
-            del line[i]
+            del cleaned_input[i]
 
         # create the h1 tag with the class and delete it
-        header = BeautifulSoup(line[0], features='html.parser')
+        header = BeautifulSoup(cleaned_input[0], features='html.parser')
         tag = header.new_tag('h1')
         tag['class'] = 'article-h1'
         header.string.wrap(tag)
         body.article.append(header)
-        del line[0]
 
         # tag the remaining paragraphs and do the inner formatting
-        for i in line:
+        for i in cleaned_input[1:]:
             seperated = i.split(' ')
-            
+
             for i, j in enumerate(seperated):
                 # the links
                 if j.startswith('<:') and j.endswith(':>'):
                     j = j.replace('<:', '')
                     j = j.replace(':>', '')
                     elements = j.split('--')
-                    
+
                     soup = BeautifulSoup('', features='html.parser')
                     tag = soup.new_tag('a', href=elements[1])
                     tag['class'] = 'link'
@@ -230,14 +132,13 @@ while True:
 
             para = ' '.join(seperated)
             para = BeautifulSoup(para, features='html.parser')
-            
+
             soup = BeautifulSoup('', features='html.parser')
             tag = soup.new_tag('p')
             tag['class'] = 'article-p'
             soup.append(tag)
             soup.p.append(para)
             body.article.append(soup)
-
 
         # insert the codeboxes to the body
         for x, y in code2.items():
@@ -256,301 +157,261 @@ while True:
         tag = tle.new_tag('title')
         tle.string.wrap(tag)
         soup.head.insert(0, tle)
-
+            
         # save the edited file
         with open(os.path.join(__location__, '../{}.html' .format(title.lower().replace(' ', '-'))), 'w') as file:
             file.write(str(soup))
 
-        time.sleep(2)
-        print("New post successfully created and appended")
-        time.sleep(2)
-
-
-
+        return cleaned_input
     
-    # if answers['item'] == "edit post":
-    #     # location of the parent folder
-    #     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+# edit or insert to the index page
+def index_post(title, custom_desc, cleaned_input, num):
+    if title.endswith('.html'):
+        title = title.replace('.html', '')
         
-    #     # filter .html files
-    #     places = [f for f in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, f)) and f.endswith('.html') and not f.startswith('index')]
+    # index file in congruence to the post
+    body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
+
+    # create the h1 tag  and delete it from the list
+    header = BeautifulSoup(cleaned_input[0], features='html.parser')
+    header.string.wrap(header.new_tag('h1'))
+    body.article.append(header)
+
+
+    # tag the paragraph and read more and add them to the body
+    if custom_desc['item'].lower() == 'no':
+        x = 0
+        for i in cleaned_input[1].split():
+            x += 1
+
+        if x > 70:
+            thing = ''
+            parts = list(filter(None, cleaned_input[1].split('.')))
+            for i in parts:
+                thing = (thing + i + '.')
+                x = 0
+                for i in thing.split():
+                    x += 1
+                if x > 70:
+                    break
+            soup = BeautifulSoup('<p></p>', features='html.parser')
+            soup.p.append(thing)
+            soup.p.append(BeautifulSoup(
+                f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
+            body.article.append(soup)
+
+        else:
+            soup = BeautifulSoup('<p></p>', features='html.parser')
+            soup.p.append(cleaned_input[1])
+            soup.p.append(BeautifulSoup(
+                f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
+            body.article.append(soup)
+
+    elif custom_desc['item'].lower() == 'yes':
+        desc = BeautifulSoup(input('Enter description: '), features='html.parser')
+        soup = BeautifulSoup('<p></p>', features='html.parser')
+        soup.p.append(desc)
+        soup.p.append(BeautifulSoup(f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
+        body.article.append(soup)
+        
+    else:
+        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+        with open(os.path.join(__location__, 'index.html'), 'r') as file:
+            main_index = BeautifulSoup(file, features="html.parser")
+        
+        tag = main_index.find('article', {'class': num})
+        para = tag.p
+        para.a['href'] = title.lower().replace(' ', '-')
+        body.article.append(para)
+        
+    return body
+
+
+
+while True:
+    answers = prompt(questions, style=style)
+
+    if answers['item'] == "create post":
+        custom_desc = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Add custom description",
+            'choices': ['No', 'Yes'],
+            'filter': lambda val: val.lower()
+        }
+        
+        title = input("Enter the title/file name: ")
+
+        __location__ = os.path.realpath(os.path.join(
+            os.getcwd(), os.path.dirname(__file__)))
+            
+        # custom description
+        custom_desc = prompt(custom_desc, style=style)
+
+        print('Creating post...')
+            
+        # the index file
+        with open(os.path.join(__location__, '../index.html'), 'r') as file:
+            main_index = BeautifulSoup(file, features="html.parser")
+        
+        #find the most recent identifier number
+        tag = main_index.find_all('article')
+        num = int(tag[0]['class'][0]) + 1            
+            
+        cleaned_input = seperate_post('input.txt', num, title)
+        body = index_post(title, custom_desc, cleaned_input, num)
+
+
+
+        # find the editing location of the source file
+        tag = main_index.find('div', {'class': 'wrapper'})
+        tag.insert(0, body)
+
+        # save the new edited source file
+        with open(os.path.join(__location__, '../index.html'), 'w') as file:
+            file.write(str(main_index))
+            
+        time.sleep(2)
+        print("New post successfully created and appended to the index")
+        time.sleep(2)
+
+
+
+    if answers['item'] == "edit post":
+        # location of the parent folder
+        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+        
+        # filter .html files
+        places = [f for f in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, f)) and f.endswith('.html') and not f.startswith('index')]
          
-    #     questions2 = {
-    #         'type': 'list',
-    #         'name': 'item',
-    #         'message': 'Which post?',
-    #         'choices': places,
-    #     }
+        questions2 = {
+            'type': 'list',
+            'name': 'item',
+            'message': 'Which post?',
+            'choices': places,
+        }
+        
+        custom_desc = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Add custom description",
+            'choices': ['No', 'Yes', 'Keep Before'],
+            'filter': lambda val: val.lower()
+        }
+        
+        custom_title = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Add custom title name",
+            'choices': ['No', 'Yes'],
+            'filter': lambda val: val.lower()
+        }
 
-    #     # ask about which post
-    #     answers = prompt(questions2, style=style)
-    #     answer = answers['item']
+        # ask about which post
+        answers = prompt(questions2, style=style)
+        custom_title = prompt(custom_title, style=style)
+        custom_desc = prompt(custom_desc, style=style)
+        
+        answer = answers['item']
 
-    #     # read the selected file
-    #     with open(os.path.join(__location__, answer), 'r') as file:
-    #         body = BeautifulSoup(file, features='html.parser')
+        # read the selected file
+        with open(os.path.join(__location__, answer), 'r') as file:
+            body = BeautifulSoup(file, features='html.parser')
 
-    #     #find the identifier tag
-    #     tag = body.find_all('article')[0]
-    #     num = int(tag['class'][0])
+        #find the identifier tag
+        tag = body.find_all('article')[0]
+        num = int(tag['class'][0])
 
-    #     #the whole list with the output data
-    #     output = []
+        #the whole list with the output data
+        output = []
 
-    #     #add the header to the out list
-    #     h1 = ' '.join(tag.find('h1').string.split())
-    #     output.append(h1)
+        #add the header to the out list
+        h1 = ' '.join(tag.find('h1').string.split())
+        output.append(h1)
 
-    #     # add the paragraphs to the out list
-    #     paragraphs = tag.find_all('p')
-    #     for i in paragraphs:
-    #         if i['class'][0] == 'article-p':
-    #             p = ' '.join(i.string.split())
-    #             output.append(p)
+        # add the paragraphs to the out list
+        paragraphs = tag.find_all('p')
+        for i in paragraphs:
+            if i['class'][0] == 'article-p':
+                if i.a is not None:
+                    i.a.replace_with(f"<:{i.a.string}--{i.a['href']}:>")
 
-    #         else:
-    #             box_checker = []
-    #             code_box3 = i.find_all('span', {'class' : 'code-box3'})
-                
-    #             for j in code_box3:
-    #                 box_checker.append(j.string)
-
-    #             words = i.get_text('').split(' ')
-    #             for i,val in enumerate(words):
-    #                 val = "".join(val.split())
-    #                 if val == '$':
-    #                     words.remove(val)
-                        
-    #                 elif val in box_checker:
-    #                     words[i] = f'`{val}`'
+                if i.span is not None:
+                    i.span.replace_with(f"<~{i.span.string}~>")
                     
-    #                 else:
-    #                     words[i] = val
+                p = ' '.join(i.get_text().split()) #to get rid of unnecessary white space
+                output.append(p)
+
+            else:
+                box_checker = []
+                code_box3 = i.find_all('span', {'class' : 'code-box3'})
                 
-    #             out = ' '.join(words).strip()
-    #             output.append(f'<-{out}->')
+                for j in code_box3:
+                    box_checker.append(j.string)
 
-    #     # join the whole out list into a single variable
-    #     output = '\n\n'.join(output)
+                words = i.get_text('').split()
+                for i,val in enumerate(words):
+                    val = "".join(val.split())
+                    if val == '$':
+                        words.remove(val)
+                        
+                    elif val in box_checker:
+                        words[i] = f'`{val}`'
+                    
+                    else:
+                        words[i] = val
+                
+                out = ' '.join(words).strip()
+                output.append(f'<-{out}->')
+
+        # join the whole out list into a single variable
+        output = '\n\n'.join(output)
+
+        # open and write the temp file
+        with open(os.path.join(__location__, 'temp.txt'), 'w') as file:
+            file.write(output)
+
+        # open the temp file for manual editing
+        loc = os.path.join(__location__, 'temp.txt')
+        subprocess.run(["notepad", loc])
         
-    #     # open and write the temp file
-    #     with open(os.path.join(__location__, 'temp.txt'), 'w') as file:
-    #         file.write(output)
+        if custom_title['item'].lower() == 'yes':
+            title = input("Enter title: ")
+        else:
+            title = answer
 
-    #     # open the temp file for manual editing
-    #     loc = os.path.join(__location__, 'temp.txt')
-    #     subprocess.run(["notepad", loc])
+        # the heavy word
+        cleaned_input = seperate_post('../temp.txt', num, title)
+        body = index_post(title, custom_desc, cleaned_input, num)
 
-    #     # read the temp with edited data
-    #     with open(os.path.join(__location__, 'temp.txt'), 'r') as file:
-    #         lines = file.readlines()
+        # delete the temp
+        os.remove(os.path.join(__location__, 'temp.txt'))
 
-    #     # clean up the list
-    #     for i, j in enumerate(lines):
-    #         lines[i] = j.replace('\n', '').strip()
-    #     lines = list(filter(None, lines))
+        #open up the index file for modifications
+        with open(os.path.join(__location__, 'index.html'), 'r') as file:
+            index_whole = BeautifulSoup(file, features="html.parser")
 
-    #     # the seperate post
-    #     article = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
-        
-    #     # create the whole code box
-    #     code = {}
-    #     code2 = {}
-    #     x = 0
-    #     for i in lines:
-    #         if i.startswith('<-') and i.endswith('->'):
-    #             i = i.replace('<-', '')
-    #             i = i.replace('->', '')
-    #             code[x] = i
-    #         x += 1
+        #find and kill the outdated reference
+        filtered_index = index_whole.find('article', class_=num)
+        index_desc = filtered_index.p
+        filtered_index.decompose()
 
-    #     for x, y in code.items():
-    #         words = y.split(' ')
-    #         box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
+        #add the modifications to the whole file
+        wrapper = index_whole.find('div', {'class': 'wrapper'})
+        post_after = wrapper.find('article', class_=f'{num - 1}')
+        post_after.insert_before(body)
 
-    #         for i in words:
-    #             i = "".join(i.split())
-    #             if i.startswith('`') and i.endswith('`'):
-    #                 i = i.replace('`', '')
+        #save the modifications
+        with open(os.path.join(__location__, 'index.html'), 'w') as file:
+            file.write(str(index_whole))
 
-    #                 soup = BeautifulSoup(i, features='html.parser')
-    #                 box3 = soup.new_tag('span')
-    #                 box3['class'] = 'code-box3'
-    #                 soup.string.wrap(box3)
-    #                 box.p.append(soup)
-    #                 box.p.append(' ')
-    #             else:
-    #                 soup = BeautifulSoup(i, features='html.parser')
-    #                 box.p.append(soup)
-    #                 box.p.append(' ')
-
-    #         box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
-    #         code2[x] = box
-
-    #     # delete the codebox lines from the list
-    #     t = list(code2.keys())
-    #     for i in sorted(t, reverse=True):
-    #         del lines[i]
-
-    #     # create the h1 tag with the class and delete it
-    #     header = BeautifulSoup(lines[0], features='html.parser')
-    #     header_tag = header.new_tag('h1')
-    #     header_tag['class'] = 'article-h1'
-    #     header.string.wrap(header_tag)
-    #     article.article.append(header)
-    #     del lines[0]
-
-    #     # tag the remaining paragraphs
-    #     for i in lines:
-    #         soup = BeautifulSoup(i, features='html.parser')
-    #         para_tag = soup.new_tag('p')
-    #         para_tag['class'] = 'article-p'
-    #         soup.string.wrap(para_tag)
-    #         article.article.append(soup)
-
-    #     # insert the codeboxes to the body
-    #     for x, y in code2.items():
-    #         article.article.insert(x, y)
-
-    #     # insert the edited article into the page wrapper
-    #     arti = body.find('article')
-    #     arti.decompose()
-    #     wrapper = body.find('div', {'class': 'wrapper'})
-    #     wrapper.insert(0, article)
-
-    #     os.remove(os.path.join(__location__, 'temp.txt'))
-
-    #     # save the edited data
-    #     with open(os.path.join(__location__, answer), 'w') as file:
-    #         file.write(str(body))
-        
+        print("Updating post...")
+        time.sleep(2)
+        print("Successfully edited post and index file.")
+        time.sleep(1)
 
 
 
-
-
-    #     #updating the index file in congruence to the post
-    #     updated_body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
-
-    #     #add the new header
-    #     header = BeautifulSoup("<h1></h1>", features="html.parser")
-    #     header.h1.append(body.article.h1.string)
-    #     updated_body.article.append(header)
-
-    #     custom_desc = {
-    #         'type': 'list',
-    #         'name': 'item',
-    #         'message': "Add custom description",
-    #         'choices': ['Yes', 'No', 'Keep Before'],
-    #         'filter': lambda val: val.lower()
-    #     }
-
-    #     #open up the index file for modifications
-    #     with open(os.path.join(__location__, 'index.html'), 'r') as file:
-    #         index_whole = BeautifulSoup(file, features="html.parser")
-
-    #     #find and kill the outdated reference
-    #     filtered_index = index_whole.find('article', class_=num)
-    #     index_desc = filtered_index.p
-
-    #     # custom description
-    #     custom_desc = prompt(custom_desc, style=style)
-
-    #     if custom_desc['item'].lower() == 'no':
-    #         #grab all the new paras
-    #         all_paragraphs = body.article.find_all('p', {'class': 'article-p'})
-
-    #         #add the updated paragraphs
-    #         x = 0
-    #         for i in all_paragraphs[0].string.split():
-    #             x += 1
-
-    #         if x > 70:
-    #             paragraph = ''
-    #             updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
-    #             sentenses = list(filter(None, all_paragraphs[0].string.split('.')))
-    #             for i in sentenses:
-    #                 paragraph = (paragraph + i + '.')
-    #                 x = 0
-    #                 for i in paragraph.split():
-    #                     x += 1
-    #                 if x > 70:
-    #                     break
-
-    #             updated_paragraph.p.append(paragraph)
-    #             updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
-    #             updated_body.article.append(updated_paragraph)
-
-    #         else:
-    #             updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
-    #             updated_paragraph.p.append(all_paragraphs[0].string)
-    #             updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
-    #             updated_body.article.append(updated_paragraph)
-
-    #     elif custom_desc['item'].lower() == 'yes':
-    #         updated_paragraph = BeautifulSoup('<p></p>', features='html.parser')
-    #         desc = BeautifulSoup(input('Enter description:\n'), features='html.parser')
-    #         updated_paragraph.p.append(desc)
-    #         updated_paragraph.p.append(BeautifulSoup(f"<a href='{answer}' class='read'> Read more...</a>", features='html.parser'))
-    #         updated_body.article.append(updated_paragraph)
-        
-    #     elif custom_desc['item'].lower() == 'keep before':
-    #         updated_paragraph = index_desc
-    #         updated_body.article.append(updated_paragraph)
-
-    #     filtered_index.decompose()
-
-    #     #add the modifications to the whole file
-    #     wrapper = index_whole.find('div', {'class': 'wrapper'})
-    #     post_after = wrapper.find('article', class_=f'{num - 1}')
-    #     post_after.insert_before(updated_body)
-
-
-    #     #save the modifications
-    #     with open(os.path.join(__location__, 'index.html'), 'w') as file:
-    #         file.write(str(index_whole))
-
-    #     print("Updating post...")
-    #     time.sleep(2)
-    #     print("Successfully edited post and index file.")
-    #     time.sleep(1)
-
-
-
-
-
-
-
-
-    # if answers['item'] == 'commit changes':
-    #     print('Committing...')
-    #     __location__ = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__)))))
-    #     os.chdir(__location__)
-    #     now = datetime.now()
-    #     time = now.strftime("%Y/%m/%d, %H:%M:%S")
-
-
-    #     repo_dir = r'just-write.github.io'
-
-    #     repo = Repo(repo_dir)
-
-    #     __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-
-
-    #     base_files = (file for file in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, file)))
-    #     temp_child = (file for file in os.listdir(os.path.join(__location__, r'HTML Generator')) if os.path.isfile(os.path.join(os.path.join(__location__, r'HTML Generator'), file)))
-        
-    #     children = []
-    #     for i in temp_child:
-    #         i = os.path.join(r'HTML Generator', i)
-    #         children.append(i)
-
-    #     files = children + list(base_files)
-
-    #     commit_message = time
-    #     repo.index.add(files)
-    #     repo.index.commit(time)
-    #     origin = repo.remote('origin')
-    #     origin.push()
-    #     print("Successfully pushed to Origin")
-        
+    if answers['item'] == 'Delete Post':
+        pass
+    # do this mate

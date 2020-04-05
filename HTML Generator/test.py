@@ -357,8 +357,165 @@
 # with open(os.path.join(__location__, answer), 'w') as file:
 #     file.write(str(body))
 
-test = '       this is    a thing   mate    '
+# test = '       this is    a thing   mate    '
 
-test = "".join(test.split())
+# test = "".join(test.split())
 
-print(test)
+# print(test)
+from bs4 import BeautifulSoup
+import os
+
+# i = "<p>some <a href='some'>thing</a> cool</p>"
+# soup = BeautifulSoup(i, features='html.parser')
+# print(soup.a['href'])
+
+
+# def seperate_post(filename, num, title=None):
+#         __location__ = os.path.realpath(os.path.join(
+#             os.getcwd(), os.path.dirname(__file__)))
+
+#         with open(os.path.join(__location__, filename), 'r') as file:
+#             input_data = file.readlines()
+            
+#         # clean the input data
+#         line = []
+#         for i in input_data:
+#             line.append(i.replace('\n', '').strip())
+
+#         cleaned_input = list(filter(None, line))
+
+#         body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
+
+#         # create the whole code box
+#         code = {}
+#         code2 = {}
+#         x = 0
+#         for i in cleaned_input:
+#             if i.startswith('<-') and i.endswith('->'):
+#                 i = i.replace('<-', '')
+#                 i = i.replace('->', '')
+#                 code[x] = i
+#             x += 1
+
+#         for x, y in code.items():
+#             words = y.split(' ')
+#             box = BeautifulSoup("<p class='code-box'></p>",
+#                                 features='html.parser')
+
+#             for i in words:
+#                 i = "".join(i.split())
+#                 if i.startswith('`') and i.endswith('`'):
+#                     i = i.replace('`', '')
+
+#                     soup = BeautifulSoup(i, features='html.parser')
+#                     tag = soup.new_tag('span')
+#                     tag['class'] = 'code-box3'
+#                     soup.string.wrap(tag)
+#                     box.p.append(soup)
+#                     box.p.append(' ')
+#                 else:
+#                     soup = BeautifulSoup(i, features='html.parser')
+#                     box.p.append(soup)
+#                     box.p.append(' ')
+
+#             box.p.insert(0, BeautifulSoup(
+#                 "<span class='code-box2'>$ </span>", features='html.parser'))
+#             code2[x] = box
+
+#         # delete the codebox lines from the list
+#         t = list(code2.keys())
+#         for i in sorted(t, reverse=True):
+#             del cleaned_input[i]
+
+#         # create the h1 tag with the class and delete it
+#         header = BeautifulSoup(cleaned_input[0], features='html.parser')
+#         tag = header.new_tag('h1')
+#         tag['class'] = 'article-h1'
+#         header.string.wrap(tag)
+#         body.article.append(header)
+#         del cleaned_input[0]
+
+#         # tag the remaining paragraphs and do the inner formatting
+#         for i in cleaned_input:
+#             seperated = i.split(' ')
+
+#             for i, j in enumerate(seperated):
+#                 # the links
+#                 if j.startswith('<:') and j.endswith(':>'):
+#                     j = j.replace('<:', '')
+#                     j = j.replace(':>', '')
+#                     elements = j.split('--')
+
+#                     soup = BeautifulSoup('', features='html.parser')
+#                     tag = soup.new_tag('a', href=elements[1])
+#                     tag['class'] = 'link'
+#                     tag.string = elements[0]
+#                     soup.append(tag)
+#                     seperated[i] = str(soup)
+
+#                 # the code snippets
+#                 elif j.startswith('<~') and j.endswith('~>'):
+#                     j = j.replace('<~', '')
+#                     j = j.replace('~>', '')
+
+#                     soup = BeautifulSoup('', features='html.parser')
+#                     tag = soup.new_tag('span')
+#                     tag['class'] = 'code-snippet'
+#                     tag.string = j
+#                     soup.append(tag)
+#                     seperated[i] = str(soup)
+
+#             para = ' '.join(seperated)
+#             para = BeautifulSoup(para, features='html.parser')
+
+#             soup = BeautifulSoup('', features='html.parser')
+#             tag = soup.new_tag('p')
+#             tag['class'] = 'article-p'
+#             soup.append(tag)
+#             soup.p.append(para)
+#             body.article.append(soup)
+
+#         # insert the codeboxes to the body
+#         for x, y in code2.items():
+#             body.article.insert(x, y)
+
+#         # open the template source file
+#         with open(os.path.join(__location__, 'template.html'), 'r') as file:
+#             soup = BeautifulSoup(file, features="html.parser")
+
+#         # find the insertion location of the template
+#         tag = soup.find('div', {'class': 'wrapper'})
+#         tag.insert(0, body)
+
+#         # title config
+#         if title == None:
+#                 title = filename
+
+#         # insert the title
+#         tle = BeautifulSoup(title, features='html.parser')
+#         tag = tle.new_tag('title')
+#         tle.string.wrap(tag)
+#         soup.head.insert(0, tle)
+            
+#         # save the edited file
+#         with open(os.path.join(__location__, '../{}.html' .format(title.lower().replace(' ', '-'))), 'w') as file:
+#             file.write(str(soup))
+
+
+# seperate_post('input.txt', 2)
+
+thing = [1, 2, 3, 4, 5]
+for i in thing[1:]:
+    print(i)
+
+
+
+
+
+
+    
+
+    
+    
+
+# remember the keep before for the custom desc
