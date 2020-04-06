@@ -398,8 +398,21 @@ while True:
 
         #add the modifications to the whole file
         wrapper = index_whole.find('div', {'class': 'wrapper'})
-        post_after = wrapper.find('article', class_=f'{num - 1}')
-        post_after.insert_before(body)
+        
+        x = 1
+        while True:
+            post_after = wrapper.find('article', class_=f'{num - x}')
+            post_before = wrapper.find('article', class_=f'{num + x}')
+            
+            if post_after is not None:
+                post_after.insert_before(body)
+                break
+            elif post_before is not None:
+                post_before.insert_after(body)
+                break
+            else:
+                x += 1
+        
 
         #save the modifications
         with open(os.path.join(__location__, 'index.html'), 'w') as file:

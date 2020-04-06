@@ -504,18 +504,20 @@ import os
 
 # seperate_post('input.txt', 2)
 
-thing = [1, 2, 3, 4, 5]
-for i in thing[1:]:
-    print(i)
+# thing = [1, 2, 3, 4, 5]
+# for i in thing[1:]:
+#     print(i)
 
 
-
-
-
-
+i = "<p>some <a href='some'>thing</a> cool</p>"
+soup = BeautifulSoup(i, features='html.parser')
     
-
-    
+thing = soup.find('article', class_=f'{1 + 5}')
+print(thing)
     
 
 # remember the keep before for the custom desc
+while True:
+    print('thing')
+    while True:
+        break
