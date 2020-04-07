@@ -105,7 +105,7 @@ def seperate_post(filename, num, title):
             seperated = i.split(' ')
 
             for i, j in enumerate(seperated):
-                # the links
+                # links
                 if j.startswith('<:') and j.endswith(':>'):
                     j = j.replace('<:', '')
                     j = j.replace(':>', '')
@@ -118,7 +118,7 @@ def seperate_post(filename, num, title):
                     soup.append(tag)
                     seperated[i] = str(soup)
 
-                # the code snippets
+                # code snippets
                 elif j.startswith('<~') and j.endswith('~>'):
                     j = j.replace('<~', '')
                     j = j.replace('~>', '')
@@ -126,6 +126,28 @@ def seperate_post(filename, num, title):
                     soup = BeautifulSoup('', features='html.parser')
                     tag = soup.new_tag('span')
                     tag['class'] = 'code-snippet'
+                    tag.string = j
+                    soup.append(tag)
+                    seperated[i] = str(soup)
+
+                # bold
+                elif j.startswith('<**') and j.endswith('**>'):
+                    j = j.replace('<**', '')
+                    j = j.replace('**>', '')
+
+                    soup = BeautifulSoup('', features='html.parser')
+                    tag = soup.new_tag('b')
+                    tag.string = j
+                    soup.append(tag)
+                    seperated[i] = str(soup)
+                    
+                # italic
+                elif j.startswith('<*') and j.endswith('*>'):
+                    j = j.replace('<*', '')
+                    j = j.replace('*>', '')
+
+                    soup = BeautifulSoup('', features='html.parser')
+                    tag = soup.new_tag('i')
                     tag.string = j
                     soup.append(tag)
                     seperated[i] = str(soup)
@@ -294,7 +316,7 @@ while True:
         custom_desc = {
             'type': 'list',
             'name': 'item',
-            'message': "Add custom description",
+            'message': "Would you like to alter the index description",
             'choices': ['No', 'Yes', 'Keep Before'],
             'filter': lambda val: val.lower()
         }
@@ -302,12 +324,12 @@ while True:
         custom_title = {
             'type': 'list',
             'name': 'item',
-            'message': "Add custom title name",
+            'message': "Would you like to alter the page title",
             'choices': ['No', 'Yes'],
             'filter': lambda val: val.lower()
         }
 
-        # ask about which post
+        # questions
         answers = prompt(questions2, style=style)
         custom_title = prompt(custom_title, style=style)
         custom_desc = prompt(custom_desc, style=style)
@@ -380,7 +402,7 @@ while True:
         else:
             title = answer
 
-        # the heavy word
+        # the heavy work
         cleaned_input = seperate_post('../temp.txt', num, title)
         body = index_post(title, custom_desc, cleaned_input, num)
 
@@ -427,4 +449,12 @@ while True:
 
     if answers['item'] == 'Delete Post':
         pass
-    # do this mate
+
+
+# ===================goals===================
+# -add the delete post func
+# -add seperate filename and title name questions
+# -add a method to edit the site name
+# -add a method to edit the site description
+# -when you edit or create the filename check it with the others
+# - seperate option in choose edit file for the index
