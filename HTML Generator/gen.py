@@ -5,7 +5,6 @@ import time
 import curses
 import platform
 import subprocess
-from git import Repo
 from pprint import pprint
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -23,7 +22,7 @@ style = style_from_dict({
     Token.Question: '#E47687',
 })
 
-questions = {
+purpose = {
     'type': 'list',
     'name': 'item',
     'message': "What's your purpose?",
@@ -31,16 +30,48 @@ questions = {
     'filter': lambda val: val.lower()
 }
 
+custom_desc_edit = {
+    'type': 'list',
+    'name': 'item',
+    'message': "Would you like to alter the index description",
+    'choices': ['No', 'Yes', 'Keep Before'],
+    'filter': lambda val: val.lower()
+}
+
+custom_title_edit = {
+    'type': 'list',
+    'name': 'item',
+    'message': "Would you like to alter the page title",
+    'choices': ['No', 'Yes'],
+    'filter': lambda val: val.lower()
+}
+
+custom_desc = {
+    'type': 'list',
+    'name': 'item',
+    'message': "Would you like to alter the index description",
+    'choices': ['No', 'Yes'],
+    'filter': lambda val: val.lower()
+}
+
+filename_edit = {
+    'type': 'list',
+    'name': 'item',
+    'message': "Would you like to alter the page filename",
+    'choices': ['No', 'Yes'],
+    'filter': lambda val: val.lower()
+}
+
+
+
 # function to create and edit the seperate post file
-def seperate_post(filename, num, title):
-        if title.endswith('.html'):
-            title = title.replace('.html', '')
+def seperate_post(input_file, num, title, filename):
         
         # find and read the file
         __location__ = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
 
-        with open(os.path.join(__location__, filename), 'r') as file:
+        with open(os.path.join(__location__, input_file), 'r') as file:
             input_data = file.readlines()
             
         # clean the input data
@@ -180,16 +211,15 @@ def seperate_post(filename, num, title):
         tle.string.wrap(tag)
         soup.head.insert(0, tle)
             
+
         # save the edited file
-        with open(os.path.join(__location__, '../{}.html' .format(title.lower().replace(' ', '-'))), 'w') as file:
+        with open(os.path.join(__location__, '../{}.html' .format(filename)), 'w') as file:
             file.write(str(soup))
 
         return cleaned_input
     
 # edit or insert to the index page
-def index_post(title, custom_desc, cleaned_input, num):
-    if title.endswith('.html'):
-        title = title.replace('.html', '')
+def index_post(title, custom_desc, cleaned_input, num, filename):
         
     # index file in congruence to the post
     body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
@@ -201,7 +231,7 @@ def index_post(title, custom_desc, cleaned_input, num):
 
 
     # tag the paragraph and read more and add them to the body
-    if custom_desc['item'].lower() == 'no':
+    if custom_desc == 'no':
         x = 0
         for i in cleaned_input[1].split():
             x += 1
@@ -219,56 +249,56 @@ def index_post(title, custom_desc, cleaned_input, num):
             soup = BeautifulSoup('<p></p>', features='html.parser')
             soup.p.append(thing)
             soup.p.append(BeautifulSoup(
-                f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
+                f"<a href='{filename}.html' class='read'> Read more...</a>", features='html.parser'))
             body.article.append(soup)
 
         else:
             soup = BeautifulSoup('<p></p>', features='html.parser')
             soup.p.append(cleaned_input[1])
             soup.p.append(BeautifulSoup(
-                f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
+                f"<a href='{filename}.html' class='read'> Read more...</a>", features='html.parser'))
             body.article.append(soup)
 
-    elif custom_desc['item'].lower() == 'yes':
-        desc = BeautifulSoup(input('Enter description: '), features='html.parser')
-        soup = BeautifulSoup('<p></p>', features='html.parser')
-        soup.p.append(desc)
-        soup.p.append(BeautifulSoup(f"<a href='{title.lower().replace(' ', '-')}.html' class='read'> Read more...</a>", features='html.parser'))
-        body.article.append(soup)
-        
-    else:
-        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+    elif custom_desc == 'before':
+        __location__ = os.path.realpath(os.path.join(
+            os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
         with open(os.path.join(__location__, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
-        
+
         tag = main_index.find('article', {'class': num})
         para = tag.p
-        para.a['href'] = title.lower().replace(' ', '-')
+        para.a['href'] = filename
         body.article.append(para)
+        
+    else:
+        desc = BeautifulSoup(custom_desc, features='html.parser')
+        soup = BeautifulSoup('<p></p>', features='html.parser')
+        soup.p.append(desc)
+        soup.p.append(BeautifulSoup(f"<a href='{filename}.html' class='read'> Read more...</a>", features='html.parser'))
+        body.article.append(soup)
         
     return body
 
 
 
 while True:
-    answers = prompt(questions, style=style)
+    answers = prompt(purpose, style=style)
 
-    if answers['item'] == "create post":
-        custom_desc = {
-            'type': 'list',
-            'name': 'item',
-            'message': "Add custom description",
-            'choices': ['No', 'Yes'],
-            'filter': lambda val: val.lower()
-        }
+    if answers['item'] == "create post":   
+        # inputs  
+        title= input("Enter the page title name: ")
+        filename = input("Enter page filename (w/o suffix): ")
+        custom_desc = prompt(custom_desc, style=style)
         
-        title = input("Enter the title/file name: ")
+        if custom_desc['item'] == 'yes':
+            custom_desc = input('Enter the description: ')
+        else:
+            custom_desc = 'no'
+
+
 
         __location__ = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
-            
-        # custom description
-        custom_desc = prompt(custom_desc, style=style)
 
         print('Creating post...')
             
@@ -280,8 +310,9 @@ while True:
         tag = main_index.find_all('article')
         num = int(tag[0]['class'][0]) + 1            
             
-        cleaned_input = seperate_post('input.txt', num, title)
-        body = index_post(title, custom_desc, cleaned_input, num)
+        # the heavy work
+        cleaned_input = seperate_post('input.txt', num, title, filename)
+        body = index_post(title, custom_desc, cleaned_input, num, filename)
 
 
 
@@ -306,39 +337,43 @@ while True:
         # filter .html files
         places = [f for f in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, f)) and f.endswith('.html') and not f.startswith('index')]
          
-        questions2 = {
+        post = {
             'type': 'list',
             'name': 'item',
             'message': 'Which post?',
             'choices': places,
         }
         
-        custom_desc = {
-            'type': 'list',
-            'name': 'item',
-            'message': "Would you like to alter the index description",
-            'choices': ['No', 'Yes', 'Keep Before'],
-            'filter': lambda val: val.lower()
-        }
-        
-        custom_title = {
-            'type': 'list',
-            'name': 'item',
-            'message': "Would you like to alter the page title",
-            'choices': ['No', 'Yes'],
-            'filter': lambda val: val.lower()
-        }
-
-        # questions
-        answers = prompt(questions2, style=style)
-        custom_title = prompt(custom_title, style=style)
-        custom_desc = prompt(custom_desc, style=style)
-        
-        answer = answers['item']
-
         # read the selected file
         with open(os.path.join(__location__, answer), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
+
+        # inputs
+        answers = prompt(post, style=style)
+        answer = answers['item']
+        
+        custom_title = prompt(custom_title_edit, style=style)
+        if custom_title['item'] == 'yes':
+            title = input("Enter the page title name: ")
+        else:
+            custom_title = body.head.title.string
+    
+        custom_desc = prompt(custom_desc_edit, style=style)
+        if custom_desc['item'] == 'yes':
+            custom_desc = input('Enter the description: ')
+        elif custom_desc['item'] == 'no':
+            custom_desc = 'no'
+        else:
+            custom_desc = 'before'
+            
+        filename = prompt(filename_edit, style=style)
+        if filename['edit'] == 'yes':
+            filename = input("Enter page filename (w/o suffix): ")
+        else:
+            filename = answer.replace('.html', '')
+
+
+
 
         #find the identifier tag
         tag = body.find_all('article')[0]
@@ -396,15 +431,10 @@ while True:
         # open the temp file for manual editing
         loc = os.path.join(__location__, 'temp.txt')
         subprocess.run(["notepad", loc])
-        
-        if custom_title['item'].lower() == 'yes':
-            title = input("Enter title: ")
-        else:
-            title = answer
 
         # the heavy work
-        cleaned_input = seperate_post('../temp.txt', num, title)
-        body = index_post(title, custom_desc, cleaned_input, num)
+        cleaned_input = seperate_post('../temp.txt', num, title, filename)
+        body = index_post(title, custom_desc, cleaned_input, num, filename)
 
         # delete the temp
         os.remove(os.path.join(__location__, 'temp.txt'))
@@ -453,7 +483,6 @@ while True:
 
 # ===================goals===================
 # -add the delete post func
-# -add seperate filename and title name questions
 # -add a method to edit the site name
 # -add a method to edit the site description
 # -when you edit or create the filename check it with the others

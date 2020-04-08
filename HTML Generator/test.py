@@ -509,15 +509,25 @@ import os
 #     print(i)
 
 
-i = "<p>some <a href='some'>thing</a> cool</p>"
-soup = BeautifulSoup(i, features='html.parser')
+# i = "<p>some <a href='some'>thing</a> cool</p>"
+# soup = BeautifulSoup(i, features='html.parser')
     
-thing = soup.find('article', class_=f'{1 + 5}')
-print(thing)
+# thing = soup.find('article', class_=f'{1 + 5}')
+# print(thing)
     
 
-# remember the keep before for the custom desc
-while True:
-    print('thing')
-    while True:
-        break
+# # remember the keep before for the custom desc
+# while True:
+#     print('thing')
+#     while True:
+#         break
+
+
+thing = 'some'
+try:
+    thing['some']
+
+except:
+    print('ran')
+elif some == other:
+    print('notran')
