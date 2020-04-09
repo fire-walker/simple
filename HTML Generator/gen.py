@@ -374,12 +374,15 @@ while True:
             
             
                 for i in files:
-                    with open(os.path.join(location, i), 'r') as file:
-                        post = BeautifulSoup(file, features='html.parser')
-                        
+                    file = open(os.path.join(location, i), 'r')
+                    post = BeautifulSoup(file, features='html.parser')
+                    file.close()
+                    
                     post.body.header.h1.a.string = header_string
-                    with open(os.path.join(location, i), 'w') as file:
-                        file.write(str(post))
+                    
+                    file = open(os.path.join(location, i), 'w')
+                    file.write(str(post))
+                    file.close()
             
             elif function == 'site_description':
                 print(f'Current description:\n{body.body.header.p.string}')

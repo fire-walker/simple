@@ -532,6 +532,6 @@ location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))
                     
 # print(files)
 
-file = open(os.path.join(location, '../hello_v2.html'), 'r+') 
-post = BeautifulSoup(file.read(), features='html.parser')
-print(post.body.header.h1.a.string)
+# file = open(os.path.join(location, '../hello_v2.html'), 'r+') 
+
+# print(post.body.header.h1.a.string)
