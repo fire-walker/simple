@@ -509,8 +509,7 @@ import os
 #     print(i)
 
 
-# i = "<p>some <a href='some'>thing</a> cool</p>"
-# soup = BeautifulSoup(i, features='html.parser')
+soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
     
 # thing = soup.find('article', class_=f'{1 + 5}')
 # print(thing)
@@ -522,12 +521,17 @@ import os
 #     while True:
 #         break
 
+# print(soup)
+# para = 'something'
+# soup.p.string = para
+# # print(soup
+# import os
 
-thing = 'some'
-try:
-    thing['some']
+location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# files = [f for f in os.listdir(f'{loc}/../') + os.listdir(loc) if f.endswith('.html') and not f.startswith('index')]
+                    
+# print(files)
 
-except:
-    print('ran')
-elif some == other:
-    print('notran')
+file = open(os.path.join(location, '../hello_v2.html'), 'r+') 
+post = BeautifulSoup(file.read(), features='html.parser')
+print(post.body.header.h1.a.string)

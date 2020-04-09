@@ -5,7 +5,6 @@ import time
 import curses
 import platform
 import subprocess
-from pprint import pprint
 from bs4 import BeautifulSoup
 from datetime import datetime
 from PyInquirer import Validator, ValidationError
@@ -62,16 +61,24 @@ filename_edit = {
     'filter': lambda val: val.lower()
 }
 
+index_edit = {
+    'type': 'list',
+    'name': 'item',
+    'message': "What would you like to edit?",
+    'choices': ['Site_header', 'Site_description', 'Index_page_title'],
+    'filter': lambda val: val.lower()
+}
+
 
 
 # function to create and edit the seperate post file
 def seperate_post(input_file, num, title, filename):
         
         # find and read the file
-        __location__ = os.path.realpath(os.path.join(
+        location = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
 
-        with open(os.path.join(__location__, input_file), 'r') as file:
+        with open(os.path.join(location, input_file), 'r') as file:
             input_data = file.readlines()
             
         # clean the input data
@@ -198,7 +205,7 @@ def seperate_post(input_file, num, title, filename):
             body.article.insert(x, y)
 
         # open the template source file
-        with open(os.path.join(__location__, 'template.html'), 'r') as file:
+        with open(os.path.join(location, '../template.html'), 'r') as file:
             soup = BeautifulSoup(file, features="html.parser")
 
         # find the insertion location of the template
@@ -213,7 +220,7 @@ def seperate_post(input_file, num, title, filename):
             
 
         # save the edited file
-        with open(os.path.join(__location__, '../{}.html' .format(filename)), 'w') as file:
+        with open(os.path.join(location, '../{}.html' .format(filename)), 'w') as file:
             file.write(str(soup))
 
         return cleaned_input
@@ -260,9 +267,9 @@ def index_post(title, custom_desc, cleaned_input, num, filename):
             body.article.append(soup)
 
     elif custom_desc == 'before':
-        __location__ = os.path.realpath(os.path.join(
+        location = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-        with open(os.path.join(__location__, 'index.html'), 'r') as file:
+        with open(os.path.join(location, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
 
         tag = main_index.find('article', {'class': num})
@@ -297,13 +304,13 @@ while True:
 
 
 
-        __location__ = os.path.realpath(os.path.join(
+        location = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
 
         print('Creating post...')
             
         # the index file
-        with open(os.path.join(__location__, '../index.html'), 'r') as file:
+        with open(os.path.join(location, '../index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
         
         #find the most recent identifier number
@@ -321,7 +328,7 @@ while True:
         tag.insert(0, body)
 
         # save the new edited source file
-        with open(os.path.join(__location__, '../index.html'), 'w') as file:
+        with open(os.path.join(location, '../index.html'), 'w') as file:
             file.write(str(main_index))
             
         time.sleep(2)
@@ -332,10 +339,10 @@ while True:
 
     if answers['item'] == "edit post":
         # location of the parent folder
-        __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
         
         # filter .html files
-        places = [f for f in os.listdir(__location__) if os.path.isfile(os.path.join(__location__, f)) and f.endswith('.html') and not f.startswith('index')]
+        places = [f for f in os.listdir(location) if os.path.isfile(os.path.join(location, f)) and f.endswith('.html') and not f.startswith('template')]
          
         post = {
             'type': 'list',
@@ -343,137 +350,181 @@ while True:
             'message': 'Which post?',
             'choices': places,
         }
-        
-        # read the selected file
-        with open(os.path.join(__location__, answer), 'r') as file:
-            body = BeautifulSoup(file, features='html.parser')
 
-        # inputs
+        # file selected
         answers = prompt(post, style=style)
         answer = answers['item']
         
-        custom_title = prompt(custom_title_edit, style=style)
-        if custom_title['item'] == 'yes':
-            title = input("Enter the page title name: ")
-        else:
-            custom_title = body.head.title.string
-    
-        custom_desc = prompt(custom_desc_edit, style=style)
-        if custom_desc['item'] == 'yes':
-            custom_desc = input('Enter the description: ')
-        elif custom_desc['item'] == 'no':
-            custom_desc = 'no'
-        else:
-            custom_desc = 'before'
+        # read the selected file
+        with open(os.path.join(location, answer), 'r') as file:
+            body = BeautifulSoup(file, features='html.parser')
+        
+        # check if it's the index or a post that's being edited
+        if answer == 'index.html':
+            # select what to edit
+            function = prompt(index_edit, style=style)['item']
             
-        filename = prompt(filename_edit, style=style)
-        if filename['edit'] == 'yes':
-            filename = input("Enter page filename (w/o suffix): ")
-        else:
-            filename = answer.replace('.html', '')
-
-
-
-
-        #find the identifier tag
-        tag = body.find_all('article')[0]
-        num = int(tag['class'][0])
-
-        #the whole list with the output data
-        output = []
-
-        #add the header to the out list
-        h1 = ' '.join(tag.find('h1').string.split())
-        output.append(h1)
-
-        # add the paragraphs to the out list
-        paragraphs = tag.find_all('p')
-        for i in paragraphs:
-            if i['class'][0] == 'article-p':
-                if i.a is not None:
-                    i.a.replace_with(f"<:{i.a.string}--{i.a['href']}:>")
-
-                if i.span is not None:
-                    i.span.replace_with(f"<~{i.span.string}~>")
-                    
-                p = ' '.join(i.get_text().split()) #to get rid of unnecessary white space
-                output.append(p)
-
-            else:
-                box_checker = []
-                code_box3 = i.find_all('span', {'class' : 'code-box3'})
-                
-                for j in code_box3:
-                    box_checker.append(j.string)
-
-                words = i.get_text('').split()
-                for i,val in enumerate(words):
-                    val = "".join(val.split())
-                    if val == '$':
-                        words.remove(val)
+            # alterations
+            if function == 'site_header':
+                print(f'Current header: {body.body.header.h1.a.string}')
+                header_string = input("Enter new header: ")
+                body.body.header.h1.a.string = header_string
+            
+                files = [f for f in os.listdir(location) if f.endswith('.html') and not f.startswith('index')]
+            
+            
+                for i in files:
+                    with open(os.path.join(location, i), 'r') as file:
+                        post = BeautifulSoup(file, features='html.parser')
                         
-                    elif val in box_checker:
-                        words[i] = f'`{val}`'
-                    
-                    else:
-                        words[i] = val
-                
-                out = ' '.join(words).strip()
-                output.append(f'<-{out}->')
-
-        # join the whole out list into a single variable
-        output = '\n\n'.join(output)
-
-        # open and write the temp file
-        with open(os.path.join(__location__, 'temp.txt'), 'w') as file:
-            file.write(output)
-
-        # open the temp file for manual editing
-        loc = os.path.join(__location__, 'temp.txt')
-        subprocess.run(["notepad", loc])
-
-        # the heavy work
-        cleaned_input = seperate_post('../temp.txt', num, title, filename)
-        body = index_post(title, custom_desc, cleaned_input, num, filename)
-
-        # delete the temp
-        os.remove(os.path.join(__location__, 'temp.txt'))
-
-        #open up the index file for modifications
-        with open(os.path.join(__location__, 'index.html'), 'r') as file:
-            index_whole = BeautifulSoup(file, features="html.parser")
-
-        #find and kill the outdated reference
-        filtered_index = index_whole.find('article', class_=num)
-        index_desc = filtered_index.p
-        filtered_index.decompose()
-
-        #add the modifications to the whole file
-        wrapper = index_whole.find('div', {'class': 'wrapper'})
-        
-        x = 1
-        while True:
-            post_after = wrapper.find('article', class_=f'{num - x}')
-            post_before = wrapper.find('article', class_=f'{num + x}')
+                    post.body.header.h1.a.string = header_string
+                    with open(os.path.join(location, i), 'w') as file:
+                        file.write(str(post))
             
-            if post_after is not None:
-                post_after.insert_before(body)
-                break
-            elif post_before is not None:
-                post_before.insert_after(body)
-                break
-            else:
-                x += 1
+            elif function == 'site_description':
+                print(f'Current description:\n{body.body.header.p.string}')
+                desc_string = input("Enter new description:\n")
+                body.body.header.p.string = desc_string
+                
+            elif function == 'index_page_title':
+                print(f'Current index title: {body.head.title.string}') 
+                title_string = input("Enter new index page title: ")
+                body.head.title.string = title_string
+                
+                
+            
+            #save the modifications
+            with open(os.path.join(location, 'index.html'), 'w') as file:
+                file.write(str(body))
+                
+            print("Updating index...")
+            time.sleep(2)
+            print("Successfully edited the index file and associations.")
+            time.sleep(1)
+                
         
+        else:
+            # format the inputs
+            custom_title = prompt(custom_title_edit, style=style)
+            if custom_title['item'] == 'yes':
+                title = input("Enter the page title name: ")
+            else:
+                custom_title = body.head.title.string
+        
+            custom_desc = prompt(custom_desc_edit, style=style)
+            if custom_desc['item'] == 'yes':
+                custom_desc = input('Enter the description: ')
+            elif custom_desc['item'] == 'no':
+                custom_desc = 'no'
+            else:
+                custom_desc = 'before'
+                
+            filename = prompt(filename_edit, style=style)
+            if filename['item'] == 'yes':
+                filename = input("Enter page filename (w/o suffix): ")
+            else:
+                filename = answer.replace('.html', '')
+            
 
-        #save the modifications
-        with open(os.path.join(__location__, 'index.html'), 'w') as file:
-            file.write(str(index_whole))
 
-        print("Updating post...")
-        time.sleep(2)
-        print("Successfully edited post and index file.")
-        time.sleep(1)
+            #find the identifier tag
+            tag = body.find_all('article')[0]
+            num = int(tag['class'][0])
+
+            #the whole list with the output data
+            output = []
+
+            #add the header to the out list
+            h1 = ' '.join(tag.find('h1').string.split())
+            output.append(h1)
+
+            # add the paragraphs to the out list
+            paragraphs = tag.find_all('p')
+            for i in paragraphs:
+                if i['class'][0] == 'article-p':
+                    if i.a is not None:
+                        i.a.replace_with(f"<:{i.a.string}--{i.a['href']}:>")
+
+                    if i.span is not None:
+                        i.span.replace_with(f"<~{i.span.string}~>")
+                        
+                    p = ' '.join(i.get_text().split()) #to get rid of unnecessary white space
+                    output.append(p)
+
+                else:
+                    box_checker = []
+                    code_box3 = i.find_all('span', {'class' : 'code-box3'})
+                    
+                    for j in code_box3:
+                        box_checker.append(j.string)
+
+                    words = i.get_text('').split()
+                    for i,val in enumerate(words):
+                        val = "".join(val.split())
+                        if val == '$':
+                            words.remove(val)
+                            
+                        elif val in box_checker:
+                            words[i] = f'`{val}`'
+                        
+                        else:
+                            words[i] = val
+                    
+                    out = ' '.join(words).strip()
+                    output.append(f'<-{out}->')
+
+            # join the whole out list into a single variable
+            output = '\n\n'.join(output)
+
+            # open and write the temp file
+            with open(os.path.join(location, 'temp.txt'), 'w') as file:
+                file.write(output)
+
+            # open the temp file for manual editing
+            loc = os.path.join(location, 'temp.txt')
+            subprocess.run(["notepad", loc])
+
+            # the heavy work
+            cleaned_input = seperate_post('../temp.txt', num, title, filename)
+            body = index_post(title, custom_desc, cleaned_input, num, filename)
+
+            # delete the temp
+            os.remove(os.path.join(location, 'temp.txt'))
+
+            #open up the index file for modifications
+            with open(os.path.join(location, 'index.html'), 'r') as file:
+                index_whole = BeautifulSoup(file, features="html.parser")
+
+            #find and kill the outdated reference
+            filtered_index = index_whole.find('article', class_=num)
+            filtered_index.decompose()
+
+            #add the modifications to the whole file
+            wrapper = index_whole.find('div', {'class': 'wrapper'})
+            
+            x = 1
+            while True:
+                post_after = wrapper.find('article', class_=f'{num - x}')
+                post_before = wrapper.find('article', class_=f'{num + x}')
+                
+                if post_after is not None:
+                    post_after.insert_before(body)
+                    break
+                elif post_before is not None:
+                    post_before.insert_after(body)
+                    break
+                else:
+                    x += 1
+            
+
+            #save the modifications
+            with open(os.path.join(location, 'index.html'), 'w') as file:
+                file.write(str(index_whole))
+
+            print("Updating post...")
+            time.sleep(2)
+            print("Successfully edited post and index file.")
+            time.sleep(1)
 
 
 
@@ -483,7 +534,6 @@ while True:
 
 # ===================goals===================
 # -add the delete post func
-# -add a method to edit the site name
-# -add a method to edit the site description
-# -when you edit or create the filename check it with the others
-# - seperate option in choose edit file for the index
+# -remove filename options from the user
+# -make the filename a randomly generated static
+# -display the choose file with the post header
