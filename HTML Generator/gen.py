@@ -236,7 +236,6 @@ def index_post(title, custom_desc, cleaned_input, num, filename):
     header.string.wrap(header.new_tag('h1'))
     body.article.append(header)
 
-
     # tag the paragraph and read more and add them to the body
     if custom_desc == 'no':
         x = 0
@@ -302,8 +301,6 @@ while True:
         else:
             custom_desc = 'no'
 
-
-
         location = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
 
@@ -320,8 +317,6 @@ while True:
         # the heavy work
         cleaned_input = seperate_post('input.txt', num, title, filename)
         body = index_post(title, custom_desc, cleaned_input, num, filename)
-
-
 
         # find the editing location of the source file
         tag = main_index.find('div', {'class': 'wrapper'})
