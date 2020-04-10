@@ -527,7 +527,7 @@ soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
 # # print(soup
 # import os
 
-location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 # files = [f for f in os.listdir(f'{loc}/../') + os.listdir(loc) if f.endswith('.html') and not f.startswith('index')]
                     
 # print(files)
@@ -535,3 +535,19 @@ location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))
 # file = open(os.path.join(location, '../hello_v2.html'), 'r+') 
 
 # print(post.body.header.h1.a.string)
+# num = 1
+# with open(os.path.join(location, 'index.html'), 'r') as file:
+#     body = BeautifulSoup(file, features='html.parser')
+
+# wrapper = body.find('div', {'class': 'wrapper'})
+# # article = body.find('article', {'class': num})
+# # article.decompose()
+# print(wrapper)
+import time
+from halo import Halo
+
+spinner = Halo(text='Loading', spinner='dots', text_color='magenta')
+spinner.start()
+
+time.sleep(5)
+spinner.stop()

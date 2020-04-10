@@ -5,6 +5,7 @@ import time
 import curses
 import platform
 import subprocess
+from halo import Halo
 from bs4 import BeautifulSoup
 from datetime import datetime
 from PyInquirer import Validator, ValidationError
@@ -289,7 +290,7 @@ def index_post(title, custom_desc, cleaned_input, num, filename):
 
 while True:
     answers = prompt(purpose, style=style)
-
+    print()
     if answers['item'] == "create post":   
         # inputs  
         title= input("Enter the page title name: ")
@@ -303,8 +304,6 @@ while True:
 
         location = os.path.realpath(os.path.join(
             os.getcwd(), os.path.dirname(__file__)))
-
-        print('Creating post...')
             
         # the index file
         with open(os.path.join(location, '../index.html'), 'r') as file:
@@ -325,10 +324,12 @@ while True:
         # save the new edited source file
         with open(os.path.join(location, '../index.html'), 'w') as file:
             file.write(str(main_index))
-            
-        time.sleep(2)
-        print("New post successfully created and appended to the index")
-        time.sleep(2)
+
+
+        spinner = Halo(text='Creating post...', spinner='pong', text_color='magenta')
+        spinner.start()
+        time.sleep(4)
+        spinner.stop_and_persist(text="New post successfully created and appended to the index", symbol='✔ ') # ✔
 
 
 
@@ -367,7 +368,6 @@ while True:
             
                 files = [f for f in os.listdir(location) if f.endswith('.html') and not f.startswith('index')]
             
-            
                 for i in files:
                     file = open(os.path.join(location, i), 'r')
                     post = BeautifulSoup(file, features='html.parser')
@@ -388,17 +388,17 @@ while True:
                 print(f'Current index title: {body.head.title.string}') 
                 title_string = input("Enter new index page title: ")
                 body.head.title.string = title_string
-                
-                
+        
             
             #save the modifications
             with open(os.path.join(location, 'index.html'), 'w') as file:
                 file.write(str(body))
                 
-            print("Updating index...")
-            time.sleep(2)
-            print("Successfully edited the index file and associations.")
-            time.sleep(1)
+                
+            spinner = Halo(text='Updating Index...', spinner='pong', text_color='magenta')
+            spinner.start()
+            time.sleep(4)
+            spinner.stop_and_persist(text="Successfully edited the index file and associations", symbol='✔ ') # ✔
                 
         
         else:
@@ -519,19 +519,63 @@ while True:
             with open(os.path.join(location, 'index.html'), 'w') as file:
                 file.write(str(index_whole))
 
-            print("Updating post...")
-            time.sleep(2)
-            print("Successfully edited post and index file.")
-            time.sleep(1)
+            spinner = Halo(text='Deleting post...', spinner='pong', text_color='magenta')
+            spinner.start()
+            time.sleep(4)
+            spinner.stop_and_persist(text="Successfully edited post and index file", symbol='✔ ') # ✔
 
 
 
-    if answers['item'] == 'Delete Post':
-        pass
+    if answers['item'] == 'delete post':
+        # location of the parent folder
+        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+        
+        # filter .html files
+        places = [f for f in os.listdir(location) if os.path.isfile(os.path.join(location, f)) and f.endswith('.html') and not f.startswith('template') and not f.startswith('index')]
+         
+        post = {
+            'type': 'list',
+            'name': 'item',
+            'message': 'Which post?',
+            'choices': places,
+        }
 
+        # file selected
+        answers = prompt(post, style=style)
+        answer = answers['item']
+        
+        # read the selected file
+        with open(os.path.join(location, answer), 'r') as file:
+            body = BeautifulSoup(file, features='html.parser')
+            
+        #find the identifier tag
+        tag = body.find_all('article')[0]
+        num = int(tag['class'][0])
+        
+        # delete the file
+        os.remove(os.path.join(location, answer))
+        
+        # read the index file
+        with open(os.path.join(location, 'index.html'), 'r') as file:
+            body = BeautifulSoup(file, features='html.parser')
+
+        # delete the index entry
+        article = body.find('article', {'class': num})
+        article.decompose()
+        
+        #save the modifications
+        with open(os.path.join(location, 'index.html'), 'w') as file:
+            file.write(str(body))
+        
+        spinner = Halo(text='Deleting post...', spinner='pong', text_color='magenta')
+        spinner.start()
+        time.sleep(4)
+        spinner.stop_and_persist(text="Successfully deleted file and it's remnants", symbol='✔ ') # ✔
+
+    print('='*50 + '\n\n')
 
 # ===================goals===================
-# -add the delete post func
 # -remove filename options from the user
 # -make the filename a randomly generated static
 # -display the choose file with the post header
+# -make a seperate json that keeps track of post-num with filename, date created, last edited
