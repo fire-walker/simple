@@ -543,11 +543,42 @@ location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.di
 # # article = body.find('article', {'class': num})
 # # article.decompose()
 # print(wrapper)
-import time
-from halo import Halo
+# import time
+# from halo import Halo
 
-spinner = Halo(text='Loading', spinner='dots', text_color='magenta')
-spinner.start()
+# spinner = Halo(text='Loading', spinner='dots', text_color='magenta')
+# spinner.start()
 
-time.sleep(5)
-spinner.stop()
+# time.sleep(5)
+# spinner.stop()
+
+# file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
+# code = {i:j for (i,j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
+# code = {i:j.replace('<-', '').replace('->', '') for (i,j) in code.items()}
+# print(code)
+# line = []
+# for i in input_data:
+#     line.append(i.replace('\n', '').strip())
+
+# line = [f.replace('\n', '').strip() for f in input_data]
+# dthing = {1:'some', 2:'somesomeosme'}
+
+# clear = [y for (x,y) in enumerate(input_data) if x not in dthing.keys()]
+# clear.insert(2, '<-some->')
+# clear.insert(1, 'thing')
+# print(clear)
+
+# for x,y in enumerate(input_data):
+#     if x in dthing.keys():
+# #         print(True)
+# #     else:
+# #         print(False)    
+# cleaned_input = [filter(None, [f.replace('\n', '').strip() for f in input_data])]
+# print(cleaned_input)
+
+x = 0
+some = len(cleaned_input[1].split())
+
+print(some)

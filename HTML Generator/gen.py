@@ -10,8 +10,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
-
-
+ 
 
 style = style_from_dict({
     Token.QuestionMark: '#000',
@@ -71,41 +70,31 @@ index_edit = {
 }
 
 
+file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+   
 
 # function to create and edit the seperate post file
 def seperate_post(input_file, num, title, filename):
-        
-        # find and read the file
-        location = os.path.realpath(os.path.join(
-            os.getcwd(), os.path.dirname(__file__)))
-
-        with open(os.path.join(location, input_file), 'r') as file:
+        with open(os.path.join(file_dir, input_file), 'r') as file:
             input_data = file.readlines()
             
         # clean the input data
-        line = []
-        for i in input_data:
-            line.append(i.replace('\n', '').strip())
-
-        cleaned_input = list(filter(None, line))
+        cleaned_input = list(filter(None, [f.replace('\n', '').strip() for f in input_data]))
         
         body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
 
         # create the whole code box
-        code = {}
-        code2 = {}
-        x = 0
-        for i in cleaned_input:
-            if i.startswith('<-') and i.endswith('->'):
-                i = i.replace('<-', '')
-                i = i.replace('->', '')
-                code[x] = i
-            x += 1
+        code = {i : j for (i, j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
+        code = {i : j.replace('<-', '').replace('->', '') for (i, j) in code.items()}
+        
+        # the lines without the code box
+        cleaned_input = [y for (x, y) in enumerate(cleaned_input) if x not in code.keys()]
 
+        code2 = {}
         for x, y in code.items():
             words = y.split(' ')
-            box = BeautifulSoup("<p class='code-box'></p>",
-                                features='html.parser')
+            box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
 
             for i in words:
                 i = "".join(i.split())
@@ -123,14 +112,9 @@ def seperate_post(input_file, num, title, filename):
                     box.p.append(soup)
                     box.p.append(' ')
 
-            box.p.insert(0, BeautifulSoup(
-                "<span class='code-box2'>$ </span>", features='html.parser'))
+            box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
             code2[x] = box
 
-        # delete the codebox lines from the list
-        t = list(code2.keys())
-        for i in sorted(t, reverse=True):
-            del cleaned_input[i]
 
         # create the h1 tag with the class and delete it
         header = BeautifulSoup(cleaned_input[0], features='html.parser')
@@ -144,57 +128,48 @@ def seperate_post(input_file, num, title, filename):
             seperated = i.split(' ')
 
             for i, j in enumerate(seperated):
+                
                 # links
                 if j.startswith('<:') and j.endswith(':>'):
-                    j = j.replace('<:', '')
-                    j = j.replace(':>', '')
+                    j = j.replace('<:', '').replace(':>', '')
                     elements = j.split('--')
 
                     soup = BeautifulSoup('', features='html.parser')
                     tag = soup.new_tag('a', href=elements[1])
                     tag['class'] = 'link'
                     tag.string = elements[0]
-                    soup.append(tag)
-                    seperated[i] = str(soup)
+                    seperated[i] = str(soup.append(tag))
 
                 # code snippets
                 elif j.startswith('<~') and j.endswith('~>'):
-                    j = j.replace('<~', '')
-                    j = j.replace('~>', '')
+                    j = j.replace('<~', '').replace('~>', '')
 
                     soup = BeautifulSoup('', features='html.parser')
                     tag = soup.new_tag('span')
                     tag['class'] = 'code-snippet'
                     tag.string = j
-                    soup.append(tag)
-                    seperated[i] = str(soup)
+                    seperated[i] = str(soup.append(tag))
 
                 # bold
                 elif j.startswith('<**') and j.endswith('**>'):
-                    j = j.replace('<**', '')
-                    j = j.replace('**>', '')
+                    j = j.replace('<**', '').replace('**>', '')
 
                     soup = BeautifulSoup('', features='html.parser')
                     tag = soup.new_tag('b')
                     tag.string = j
-                    soup.append(tag)
-                    seperated[i] = str(soup)
+                    seperated[i] = str(soup.append(tag))
                     
                 # italic
                 elif j.startswith('<*') and j.endswith('*>'):
-                    j = j.replace('<*', '')
-                    j = j.replace('*>', '')
+                    j = j.replace('<*', '').replace('*>', '')
 
                     soup = BeautifulSoup('', features='html.parser')
                     tag = soup.new_tag('i')
                     tag.string = j
-                    soup.append(tag)
-                    seperated[i] = str(soup)
-
-            para = ' '.join(seperated)
-            para = BeautifulSoup(para, features='html.parser')
+                    seperated[i] = str(soup.append(tag))
 
             soup = BeautifulSoup('', features='html.parser')
+            para = BeautifulSoup(' '.join(seperated), features='html.parser')
             tag = soup.new_tag('p')
             tag['class'] = 'article-p'
             soup.append(tag)
@@ -206,7 +181,7 @@ def seperate_post(input_file, num, title, filename):
             body.article.insert(x, y)
 
         # open the template source file
-        with open(os.path.join(location, '../template.html'), 'r') as file:
+        with open(os.path.join(file_dir, '../template.html'), 'r') as file:
             soup = BeautifulSoup(file, features="html.parser")
 
         # find the insertion location of the template
@@ -214,20 +189,20 @@ def seperate_post(input_file, num, title, filename):
         tag.insert(0, body)
 
         # insert the title
-        tle = BeautifulSoup(title, features='html.parser')
-        tag = tle.new_tag('title')
-        tle.string.wrap(tag)
-        soup.head.insert(0, tle)
+        title_soup = BeautifulSoup(title, features='html.parser')
+        tag = title_soup.new_tag('title')
+        title_soup.string.wrap(tag)
+        soup.head.insert(0, title_soup)
             
 
         # save the edited file
-        with open(os.path.join(location, '../{}.html' .format(filename)), 'w') as file:
+        with open(os.path.join(file_dir, '../{}.html' .format(filename)), 'w') as file:
             file.write(str(soup))
 
         return cleaned_input
     
 # edit or insert to the index page
-def index_post(title, custom_desc, cleaned_input, num, filename):
+def index_post(custom_desc, cleaned_input, num, filename, base_dir):
         
     # index file in congruence to the post
     body = BeautifulSoup(f"<article class='{num}'></article>", features='html.parser')
@@ -239,9 +214,9 @@ def index_post(title, custom_desc, cleaned_input, num, filename):
 
     # tag the paragraph and read more and add them to the body
     if custom_desc == 'no':
-        x = 0
-        for i in cleaned_input[1].split():
-            x += 1
+
+        x = len(cleaned_input[1].split())
+
 
         if x > 70:
             thing = ''
@@ -267,9 +242,7 @@ def index_post(title, custom_desc, cleaned_input, num, filename):
             body.article.append(soup)
 
     elif custom_desc == 'before':
-        location = os.path.realpath(os.path.join(
-            os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-        with open(os.path.join(location, 'index.html'), 'r') as file:
+        with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
 
         tag = main_index.find('article', {'class': num})
@@ -302,11 +275,9 @@ while True:
         else:
             custom_desc = 'no'
 
-        location = os.path.realpath(os.path.join(
-            os.getcwd(), os.path.dirname(__file__)))
-            
+
         # the index file
-        with open(os.path.join(location, '../index.html'), 'r') as file:
+        with open(os.path.join(file_dir, '../index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
         
         #find the most recent identifier number
@@ -315,14 +286,14 @@ while True:
             
         # the heavy work
         cleaned_input = seperate_post('input.txt', num, title, filename)
-        body = index_post(title, custom_desc, cleaned_input, num, filename)
+        body = index_post(custom_desc, cleaned_input, num, filename, base_dir)
 
         # find the editing location of the source file
         tag = main_index.find('div', {'class': 'wrapper'})
         tag.insert(0, body)
 
         # save the new edited source file
-        with open(os.path.join(location, '../index.html'), 'w') as file:
+        with open(os.path.join(file_dir, '../index.html'), 'w') as file:
             file.write(str(main_index))
 
 
@@ -334,11 +305,8 @@ while True:
 
 
     if answers['item'] == "edit post":
-        # location of the parent folder
-        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-        
         # filter .html files
-        places = [f for f in os.listdir(location) if os.path.isfile(os.path.join(location, f)) and f.endswith('.html') and not f.startswith('template')]
+        places = [f for f in os.listdir(base_dir) if os.path.isfile(os.path.join(base_dir, f)) and f.endswith('.html') and not f.startswith('template')]
          
         post = {
             'type': 'list',
@@ -352,7 +320,7 @@ while True:
         answer = answers['item']
         
         # read the selected file
-        with open(os.path.join(location, answer), 'r') as file:
+        with open(os.path.join(base_dir, answer), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
         
         # check if it's the index or a post that's being edited
@@ -366,16 +334,16 @@ while True:
                 header_string = input("Enter new header: ")
                 body.body.header.h1.a.string = header_string
             
-                files = [f for f in os.listdir(location) if f.endswith('.html') and not f.startswith('index')]
+                files = [f for f in os.listdir(base_dir) if f.endswith('.html') and not f.startswith('index')]
             
                 for i in files:
-                    file = open(os.path.join(location, i), 'r')
+                    file = open(os.path.join(base_dir, i), 'r')
                     post = BeautifulSoup(file, features='html.parser')
                     file.close()
                     
                     post.body.header.h1.a.string = header_string
                     
-                    file = open(os.path.join(location, i), 'w')
+                    file = open(os.path.join(base_dir, i), 'w')
                     file.write(str(post))
                     file.close()
             
@@ -391,7 +359,7 @@ while True:
         
             
             #save the modifications
-            with open(os.path.join(location, 'index.html'), 'w') as file:
+            with open(os.path.join(base_dir, 'index.html'), 'w') as file:
                 file.write(str(body))
                 
                 
@@ -407,7 +375,7 @@ while True:
             if custom_title['item'] == 'yes':
                 title = input("Enter the page title name: ")
             else:
-                custom_title = body.head.title.string
+                title = body.head.title.string
         
             custom_desc = prompt(custom_desc_edit, style=style)
             if custom_desc['item'] == 'yes':
@@ -475,22 +443,22 @@ while True:
             output = '\n\n'.join(output)
 
             # open and write the temp file
-            with open(os.path.join(location, 'temp.txt'), 'w') as file:
+            with open(os.path.join(base_dir, 'temp.txt'), 'w') as file:
                 file.write(output)
 
             # open the temp file for manual editing
-            loc = os.path.join(location, 'temp.txt')
+            loc = os.path.join(base_dir, 'temp.txt')
             subprocess.run(["notepad", loc])
 
             # the heavy work
             cleaned_input = seperate_post('../temp.txt', num, title, filename)
-            body = index_post(title, custom_desc, cleaned_input, num, filename)
+            body = index_post(custom_desc, cleaned_input, num, filename, base_dir)
 
             # delete the temp
-            os.remove(os.path.join(location, 'temp.txt'))
+            os.remove(os.path.join(base_dir, 'temp.txt'))
 
             #open up the index file for modifications
-            with open(os.path.join(location, 'index.html'), 'r') as file:
+            with open(os.path.join(base_dir, 'index.html'), 'r') as file:
                 index_whole = BeautifulSoup(file, features="html.parser")
 
             #find and kill the outdated reference
@@ -516,7 +484,7 @@ while True:
             
 
             #save the modifications
-            with open(os.path.join(location, 'index.html'), 'w') as file:
+            with open(os.path.join(base_dir, 'index.html'), 'w') as file:
                 file.write(str(index_whole))
 
             spinner = Halo(text='Deleting post...', spinner='pong', text_color='magenta')
@@ -527,11 +495,8 @@ while True:
 
 
     if answers['item'] == 'delete post':
-        # location of the parent folder
-        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-        
         # filter .html files
-        places = [f for f in os.listdir(location) if os.path.isfile(os.path.join(location, f)) and f.endswith('.html') and not f.startswith('template') and not f.startswith('index')]
+        places = [f for f in os.listdir(base_dir) if os.path.isfile(os.path.join(base_dir, f)) and f.endswith('.html') and not f.startswith('template') and not f.startswith('index')]
          
         post = {
             'type': 'list',
@@ -545,7 +510,7 @@ while True:
         answer = answers['item']
         
         # read the selected file
-        with open(os.path.join(location, answer), 'r') as file:
+        with open(os.path.join(base_dir, answer), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
             
         #find the identifier tag
@@ -553,10 +518,10 @@ while True:
         num = int(tag['class'][0])
         
         # delete the file
-        os.remove(os.path.join(location, answer))
+        os.remove(os.path.join(base_dir, answer))
         
         # read the index file
-        with open(os.path.join(location, 'index.html'), 'r') as file:
+        with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
 
         # delete the index entry
@@ -564,15 +529,16 @@ while True:
         article.decompose()
         
         #save the modifications
-        with open(os.path.join(location, 'index.html'), 'w') as file:
+        with open(os.path.join(base_dir, 'index.html'), 'w') as file:
             file.write(str(body))
         
         spinner = Halo(text='Deleting post...', spinner='pong', text_color='magenta')
         spinner.start()
         time.sleep(4)
-        spinner.stop_and_persist(text="Successfully deleted file and it's remnants", symbol='✔ ') # ✔
-
+        spinner.stop_and_persist(text="Successfully deleted the post and it's remnants", symbol='✔ ') # ✔
+        
     print('='*50 + '\n\n')
+    time.sleep(2)
 
 # ===================goals===================
 # -remove filename options from the user
