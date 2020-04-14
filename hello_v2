@@ -2,9 +2,10 @@
 
 <html lang="en">
 <head>
-<title>hello_v1</title>
+<title>hello_v2</title>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="ie=edge" http-equiv="X-UA-Compatible"/>
 <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
 <link href="style.css" rel="stylesheet" type="text/css"/>
 <link href="https://fonts.googleapis.com/css?family=Lora:400,700&amp;display=swap" rel="stylesheet"/>
@@ -19,25 +20,26 @@
 <h1 class="article-header"><a href="index.html">Simple</a></h1>
 </header>
 <div class="wrapper">
-<article class="3">
+<article class="2">
 <h1 class="article-h1">Hello World</h1>
-<p class="article-p">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam at corporis tenetur
-                nesciunt amet, ducimus veritatis aliquid, asperiores quo, pariatur dolores assumenda eaque ad. Eum ut
-                non iusto eius animi, tenetur harum vero eveniet sint, quam minus sit quis! Similique nobis veniam totam
-                aliquid dolorum molestiae impedit laboriosam quos rerum accusantium soluta provident vel, accusamus,
-                vero porro dignissimos. Et facilis, assumenda quaerat quos, odio, eligendi necessitatibus voluptatum nam
-                esse corrupti repudiandae expedita itaque ab culpa beatae nostrum ducimus eaque deserunt praesentium
-                tenetur. Dolorem est expedita, deserunt illo consectetur veritatis ducimus?</p>
+<p class="article-p">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi sit voluptate deleniti
+                hic amet consequatur earum alias doloribus officiis nulla nam harum ad, expedita ullam accusamus
+                mollitia modi placeat sapiente. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate,
+                earum esse. Molestias quaerat fuga commodi, eligendi deserunt quidem numquam ratione culpa earum, sunt
+                aspernatur consequuntur suscipit adipisci.</p>
+<p class="code-box"><span class="code-box2">$ </span>sudo apt <span class="code-box3">install</span> gedit
+            </p>
 <p class="article-p">Exercitationem cupiditate labore debitis expedita officiis, asperiores sapiente
                 numquam? Hic ut, a debitis quia nobis doloremque sit ipsam impedit temporibus aperiam earum. Molestias
                 illum unde praesentium veritatis ut optio minima deleniti! Alias porro laboriosam vel. Quibusdam illum,
-                nihil illo iste neque eveniet corrupti eligendi eaque voluptates nemo? Repellat veniam iusto cum magnam
-                et nesciunt laborum temporibus atque, quo perferendis repudiandae magni minus quos tenetur assumenda
-                corrupti natus non, reprehenderit ducimus molestias similique cumque.</p>
+                nihil illo iste neque eveniet corrupti eligendi <a class="link" href="some.html">eaque</a> voluptates
+                nemo? Repellat veniam iusto cum magnamet nesciunt laborum temporibus atque, quo perferendis repudiandae
+                magni minus quos tenetur assumendacorrupti natus non, reprehenderit ducimus molestias similique cumque.
+            </p>
 <p class="article-p">Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga nihil nobis reprehenderit
                 error provident. Esse labore eveniet ducimus nihil vel dignissimos delectus enim eaque amet accusantium
                 porro nesciunt, doloribus maxime similique sint tenetur ad? Illum deleniti tenetur, voluptatum quis,
-                architecto unde omnis est natus voluptatibus reprehenderit molestiae quasi dignissimos.</p>
+                architecto unde omnis est natus voluptatibus reprehenderit molestiae quasi dignissimos error!</p>
 </article>
 <hr/>
 <h1 class="hr-h1">fin</h1>

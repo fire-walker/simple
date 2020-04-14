@@ -578,7 +578,52 @@ cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
 # cleaned_input = [filter(None, [f.replace('\n', '').strip() for f in input_data])]
 # print(cleaned_input)
 
-x = 0
-some = len(cleaned_input[1].split())
+# x = 0
+# some = len(cleaned_input[1].split())
 
-print(some)
+# print(some)
+# dthing = {1:1, 2:2, 3:3}
+# x = 0
+# for i in dthing.items():
+#     x += 1
+# y = len(dthing.keys())
+# print(x, y)
+
+
+# n = ''
+# if n is None:
+#     print('None')
+# else:
+#     print("Not None")
+# import random
+# import string
+# filename = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
+# print(filename)
+import json
+
+
+# {post_num: [last_edited, filename, date_created]}
+dthing = {0: ['last_edited', 'index.html', 'date_created'],
+          1 : ['last_edited', 'hello_v1', 'date_created'],
+          2 : ['last_edited', 'hello_v2', 'date_created'],
+          3 : ['last_edited', 'hello_v3', 'date_created'],
+          4 : ['last_edited', 'hello_v4', 'date_created']}
+
+# places = [y[1] for x, y in dthing.items()]# if x != 0
+# print(dthing[2][1])
+
+# import time
+# thing = time.strftime('%Y/%m/%d %H:%M')
+# print(thing)
+# file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+# with open(os.path.join(file_dir, 'post_data.json'), "r") as file:
+#     post_data = json.load(file)
+#     post_data = {int(x) : y for x, y in post_data.items()}
+    
+    
+# print(post_data[0])
+import time
+dict_key = [x for x, y in dthing.items() if x == 2][0]
+dthing[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
+print(dthing)
