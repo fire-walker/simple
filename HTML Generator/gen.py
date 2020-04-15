@@ -10,7 +10,7 @@ from halo import Halo
 from bs4 import BeautifulSoup
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
- 
+
 
 style = style_from_dict({
     Token.QuestionMark: '#000',
@@ -70,27 +70,35 @@ index_edit = {
 }
 
 
-file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-   
+file_dir = os.path.realpath(os.path.join(
+    os.getcwd(), os.path.dirname(__file__)))
+base_dir = os.path.realpath(os.path.join(
+    os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+
 
 # function to create and edit the seperate post file
 def seperate_post(input_file, post_class, title, filename):
-    file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    file_dir = os.path.realpath(os.path.join(
+        os.getcwd(), os.path.dirname(__file__)))
     with open(os.path.join(file_dir, input_file), 'r') as file:
         input_data = file.readlines()
-        
+
     # clean the input data
-    cleaned_input = list(filter(None, [f.replace('\n', '').strip() for f in input_data]))
-    
-    body = BeautifulSoup(f"<article class='{post_class}'></article>", features='html.parser')
+    cleaned_input = list(
+        filter(None, [f.replace('\n', '').strip() for f in input_data]))
+
+    body = BeautifulSoup(
+        f"<article class='{post_class}'></article>", features='html.parser')
 
     # create the whole code box
-    code = {i : j for (i, j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
-    code = {i : j.replace('<-', '').replace('->', '') for (i, j) in code.items()}
-    
+    code = {i: j for (i, j) in enumerate(cleaned_input)
+            if j.startswith('<-') and j.endswith('->')}
+    code = {i: j.replace('<-', '').replace('->', '')
+            for (i, j) in code.items()}
+
     # the lines without the code box
-    cleaned_input = [y for (x, y) in enumerate(cleaned_input) if x not in code.keys()]
+    cleaned_input = [y for (x, y) in enumerate(
+        cleaned_input) if x not in code.keys()]
 
     code2 = {}
     for x, y in code.items():
@@ -113,9 +121,9 @@ def seperate_post(input_file, post_class, title, filename):
                 box.p.append(soup)
                 box.p.append(' ')
 
-        box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
+        box.p.insert(0, BeautifulSoup(
+            "<span class='code-box2'>$ </span>", features='html.parser'))
         code2[x] = box
-
 
     # create the h1 tag with the class and delete it
     header = BeautifulSoup(cleaned_input[0], features='html.parser')
@@ -129,7 +137,7 @@ def seperate_post(input_file, post_class, title, filename):
         seperated = i.split(' ')
 
         for i, j in enumerate(seperated):
-            
+
             # links
             if j.startswith('<:') and j.endswith(':>'):
                 j = j.replace('<:', '').replace(':>', '')
@@ -159,7 +167,7 @@ def seperate_post(input_file, post_class, title, filename):
                 tag = soup.new_tag('b')
                 tag.string = j
                 seperated[i] = str(soup.append(tag))
-                
+
             # italic
             elif j.startswith('<*') and j.endswith('*>'):
                 j = j.replace('<*', '').replace('*>', '')
@@ -194,20 +202,23 @@ def seperate_post(input_file, post_class, title, filename):
     tag = title_soup.new_tag('title')
     title_soup.string.wrap(tag)
     soup.head.insert(0, title_soup)
-        
 
     # save the edited file
     with open(os.path.join(file_dir, '../{}' .format(filename)), 'w') as file:
         file.write(str(soup))
 
     return cleaned_input
-    
+
 # edit or insert to the index page
+
+
 def index_post(custom_desc, cleaned_input, post_class, filename):
-    base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-    
+    base_dir = os.path.realpath(os.path.join(
+        os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+
     # index file in congruence to the post
-    body = BeautifulSoup(f"<article class='{post_class}'></article>", features='html.parser')
+    body = BeautifulSoup(
+        f"<article class='{post_class}'></article>", features='html.parser')
 
     # create the h1 tag  and delete it from the list
     header = BeautifulSoup(cleaned_input[0], features='html.parser')
@@ -218,7 +229,6 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
     if custom_desc == 'no':
 
         x = len(cleaned_input[1].split())
-
 
         if x > 70:
             thing = ''
@@ -251,51 +261,49 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
         para = tag.p
         para.a['href'] = filename
         body.article.append(para)
-        
+
     else:
         desc = BeautifulSoup(custom_desc, features='html.parser')
         soup = BeautifulSoup('<p></p>', features='html.parser')
         soup.p.append(desc)
-        soup.p.append(BeautifulSoup(f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
+        soup.p.append(BeautifulSoup(
+            f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
         body.article.append(soup)
-        
-    return body
 
+    return body
 
 
 while True:
     answers = prompt(purpose, style=style)
-    print()
-    
+
     with open(os.path.join(file_dir, 'post_data.json'), "r") as file:
         post_data = json.load(file)
-        post_data = {int(x) : y for x, y in post_data.items()}
+        post_data = {int(x): y for x, y in post_data.items()}
 
-    
-    if answers['item'] == "create post":   
-        # inputs  
-        title= input("Enter the page title name: ")
-        
+    if answers['item'] == "create post":
+        # inputs
+        title = input("Enter the page title name: ")
+
         custom_desc = prompt(custom_desc, style=style)
         if custom_desc['item'] == 'yes':
             custom_desc = input('Enter the description: ')
         else:
             custom_desc = 'no'
 
-
         # the index file
         with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
-        
-        #find the most recent identifier number
+
+        # find the most recent identifier number
         tag = main_index.find_all('article')
-        post_class = int(tag[0]['class'][0]) + 1   
-        
+        post_class = int(tag[0]['class'][0]) + 1
+
         # generate filename
         filename = f"{''.join(random.choices(string.ascii_letters + string.digits, k=30))}.html"
-            
+
         # update the json of the post creation
-        post_data[post_class] = [title, filename, time.strftime('%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
+        post_data[post_class] = [title, filename, time.strftime(
+            '%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
 
         # the heavy work
         cleaned_input = seperate_post('input.txt', post_class, title, filename)
@@ -308,19 +316,17 @@ while True:
         # save the new edited source file
         with open(os.path.join(file_dir, '../index.html'), 'w') as file:
             file.write(str(main_index))
-
-
-        spinner = Halo(text='Creating post...', spinner='pong', text_color='magenta')
+        spinner = Halo(text='Creating post...',
+                       spinner='pong', text_color='magenta')
         spinner.start()
         time.sleep(4)
-        spinner.stop_and_persist(text="New post successfully created and appended to the index", symbol='✔ ') # ✔
-
-
+        spinner.stop_and_persist(
+            text="New post successfully created and appended to the index", symbol='✔ ')  # ✔
 
     if answers['item'] == "edit post":
         # filter files
         places = [y[0] for x, y in post_data.items()]
-        
+
         post = {
             'type': 'list',
             'name': 'item',
@@ -332,64 +338,65 @@ while True:
         answers = prompt(post, style=style)
         answer = answers['item']
         answer = [y[1] for x, y in post_data.items() if y[0] == answer][0]
-        
+
         # read the selected file
         with open(os.path.join(base_dir, answer), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
-        
+
         # check if it's the index or a post that's being edited
         if answer == 'index.html':
             # select what to edit
             function = prompt(index_edit, style=style)['item']
-            
+
             # alterations
             if function == 'site_header':
                 print(f'Current header: {body.body.header.h1.a.string}')
                 header_string = input("Enter new header: ")
                 body.body.header.h1.a.string = header_string
-            
+
                 # filter the posts for filenames
                 places = [y[1] for x, y in post_data.items() if x != 0]
-            
+
                 for i in places:
                     file = open(os.path.join(base_dir, i), 'r')
                     post = BeautifulSoup(file, features='html.parser')
                     file.close()
-                    
+
                     post.body.header.h1.a.string = header_string
-                    
+
                     file = open(os.path.join(base_dir, i), 'w')
                     file.write(str(post))
                     file.close()
-                    
+
                     # update the json last edited time of the posts
-                    dict_key = [x for x, y in post_data.items() if y[0] == i][0]
+                    dict_key = [x for x, y in post_data.items()
+                                if y[0] == i][0]
                     post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
-            
+
             elif function == 'site_description':
                 print(f'Current description:\n{body.body.header.p.string}')
                 desc_string = input("Enter new description:\n")
                 body.body.header.p.string = desc_string
-                
+
             elif function == 'index_page_title':
-                print(f'Current index title: {body.head.title.string}') 
+                print(f'Current index title: {body.head.title.string}')
                 title_string = input("Enter new index page title: ")
                 body.head.title.string = title_string
-        
-            
-            #save the modifications
+
+            # save the modifications
             with open(os.path.join(base_dir, 'index.html'), 'w') as file:
                 file.write(str(body))
-                
+
             # update the json last edited time of index
             post_data[0][2] = time.strftime('%Y/%m/%d %H:%M')
-            
-            spinner = Halo(text='Updating Index...', spinner='pong', text_color='magenta')
+
+            spinner = Halo(text='Updating Index...',
+                           spinner='pong', text_color='magenta')
             spinner.start()
             time.sleep(4)
-            spinner.stop_and_persist(text="Successfully edited the index file and associations", symbol='✔ ') # ✔
-                
-        
+            spinner.stop_and_persist(
+                text="Successfully edited the index file and associations", symbol='✔ ')  # ✔
+
         else:
             # format the inputs
             custom_title = prompt(custom_title_edit, style=style)
@@ -397,23 +404,21 @@ while True:
                 title = input("Enter new page title name: ")
             else:
                 title = body.head.title.string
-        
+
             custom_desc = prompt(custom_desc_edit, style=style)
             if custom_desc['item'] == 'yes':
                 custom_desc = input('Enter new description: ')
             else:
                 custom_desc = custom_desc['item']
-        
 
-
-            #find the identifier tag
+            # find the identifier tag
             tag = body.find_all('article')[0]
             post_class = int(tag['class'][0])
 
-            #the whole list with the output data
+            # the whole list with the output data
             output = []
 
-            #add the header to the out list
+            # add the header to the out list
             h1 = ' '.join(tag.find('h1').string.split())
             output.append(h1)
 
@@ -426,29 +431,30 @@ while True:
 
                     if i.span is not None:
                         i.span.replace_with(f"<~{i.span.string}~>")
-                        
-                    p = ' '.join(i.get_text().split()) #to get rid of unnecessary white space
+
+                    # to get rid of unnecessary white space
+                    p = ' '.join(i.get_text().split())
                     output.append(p)
 
                 else:
                     box_checker = []
-                    code_box3 = i.find_all('span', {'class' : 'code-box3'})
-                    
+                    code_box3 = i.find_all('span', {'class': 'code-box3'})
+
                     for j in code_box3:
                         box_checker.append(j.string)
 
                     words = i.get_text('').split()
-                    for i,val in enumerate(words):
+                    for i, val in enumerate(words):
                         val = "".join(val.split())
                         if val == '$':
                             words.remove(val)
-                            
+
                         elif val in box_checker:
                             words[i] = f'`{val}`'
-                        
+
                         else:
                             words[i] = val
-                    
+
                     out = ' '.join(words).strip()
                     output.append(f'<-{out}->')
 
@@ -470,22 +476,24 @@ while True:
             # delete the temp
             os.remove(os.path.join(file_dir, 'temp'))
 
-            #open up the index file for modifications
+            # open up the index file for modifications
             with open(os.path.join(base_dir, 'index.html'), 'r') as file:
                 index_whole = BeautifulSoup(file, features="html.parser")
 
-            #find and kill the outdated reference
+            # find and kill the outdated reference
             filtered_index = index_whole.find('article', class_=post_class)
             filtered_index.decompose()
 
-            #add the modifications to the whole file
+            # add the modifications to the whole file
             wrapper = index_whole.find('div', {'class': 'wrapper'})
-            
+
             x = 1
             while True:
-                post_after = wrapper.find('article', class_=f'{post_class - x}')
-                post_before = wrapper.find('article', class_=f'{post_class + x}')
-                
+                post_after = wrapper.find(
+                    'article', class_=f'{post_class - x}')
+                post_before = wrapper.find(
+                    'article', class_=f'{post_class + x}')
+
                 if post_after is not None:
                     post_after.insert_before(body)
                     break
@@ -494,27 +502,26 @@ while True:
                     break
                 else:
                     x += 1
-            
 
-            #save the modifications
+            # save the modifications
             with open(os.path.join(base_dir, 'index.html'), 'w') as file:
                 file.write(str(index_whole))
-                
+
             # update the json last edited time
             dict_key = [x for x, y in post_data.items() if y[1] == answer][0]
             post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
 
-            spinner = Halo(text='Editing post...', spinner='pong', text_color='magenta')
+            spinner = Halo(text='Editing post...',
+                           spinner='pong', text_color='magenta')
             spinner.start()
             time.sleep(4)
-            spinner.stop_and_persist(text="Successfully edited post and index file", symbol='✔ ') # ✔
-
-
+            spinner.stop_and_persist(
+                text="Successfully edited post and index file", symbol='✔ ')  # ✔
 
     if answers['item'] == 'delete post':
         # filter the files
         places = [y[0] for x, y in post_data.items() if x != 0]
-         
+
         post = {
             'type': 'list',
             'name': 'item',
@@ -526,20 +533,20 @@ while True:
         answers = prompt(post, style=style)
         answer = answers['item']
         answer = [y[1] for x, y in post_data.items() if y[0] == answer][0]
-        
+
         # read the selected file
         with open(os.path.join(base_dir, answer), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
-            
-        #find the identifier tag
+
+        # find the identifier tag
         tag = body.find_all('article')[0]
         post_class = int(tag['class'][0])
-        
+
         # delete the file and info from json
         os.remove(os.path.join(base_dir, answer))
         dict_key = [x for x, y in post_data.items() if y[1] == answer][0]
         del dict_key
-        
+
         # read the index file
         with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
@@ -547,16 +554,18 @@ while True:
         # delete the index entry
         article = body.find('article', {'class': post_class})
         article.decompose()
-        
-        #save the modifications
+
+        # save the modifications
         with open(os.path.join(base_dir, 'index.html'), 'w') as file:
             file.write(str(body))
-        
-        spinner = Halo(text='Deleting post...', spinner='pong', text_color='magenta')
+
+        spinner = Halo(text='Deleting post...',
+                       spinner='pong', text_color='magenta')
         spinner.start()
         time.sleep(4)
-        spinner.stop_and_persist(text="Successfully deleted the post and it's remnants", symbol='✔ ') # ✔
-        
+        spinner.stop_and_persist(
+            text="Successfully deleted the post and it's remnants", symbol='✔ ')  # ✔
+
     print('='*50 + '\n\n')
     time.sleep(2)
 
