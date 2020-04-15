@@ -246,7 +246,7 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
                 f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
             body.article.append(soup)
 
-    elif custom_desc == 'before':
+    elif custom_desc == 'keep before':
         with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
 
@@ -298,7 +298,7 @@ while True:
         filename = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
             
         # update the json of the post creation
-        post_data[post_class] = [time.strftime('%Y/%m/%d %H:%M'), filename, time.strftime('%Y/%m/%d %H:%M')]
+        post_data[post_class] = [title, filename, time.strftime('%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
 
         # the heavy work
         cleaned_input = seperate_post('input.txt', post_class, title, filename)
@@ -321,8 +321,8 @@ while True:
 
 
     if answers['item'] == "edit post":
-        # filter .html files
-        places = [y[1] for x, y in post_data.items()]
+        # filter files
+        places = [y[0] for x, y in post_data.items()]
         
         post = {
             'type': 'list',
@@ -334,6 +334,7 @@ while True:
         # file selected
         answers = prompt(post, style=style)
         answer = answers['item']
+        answer = [y[1] for x, y in post_data.items() if y[0] == answer][0]
         
         # read the selected file
         with open(os.path.join(base_dir, answer), 'r') as file:
@@ -350,6 +351,7 @@ while True:
                 header_string = input("Enter new header: ")
                 body.body.header.h1.a.string = header_string
             
+                # filter the posts for filenames
                 places = [y[1] for x, y in post_data.items() if x != 0]
             
                 for i in places:
@@ -364,8 +366,8 @@ while True:
                     file.close()
                     
                     # update the json last edited time of the posts
-                    dict_key = [x for x, y in post_data.items() if y[1] == i][0]
-                    post_data[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
+                    dict_key = [x for x, y in post_data.items() if y[0] == i][0]
+                    post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
             
             elif function == 'site_description':
                 print(f'Current description:\n{body.body.header.p.string}')
@@ -383,7 +385,7 @@ while True:
                 file.write(str(body))
                 
             # update the json last edited time of index
-            post_data[0][0] = time.strftime('%Y/%m/%d %H:%M')
+            post_data[0][2] = time.strftime('%Y/%m/%d %H:%M')
             
             spinner = Halo(text='Updating Index...', spinner='pong', text_color='magenta')
             spinner.start()
@@ -503,7 +505,7 @@ while True:
                 
             # update the json last edited time
             dict_key = [x for x, y in post_data.items() if y[1] == answer][0]
-            post_data[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
+            post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
 
             spinner = Halo(text='Editing post...', spinner='pong', text_color='magenta')
             spinner.start()
@@ -513,8 +515,8 @@ while True:
 
 
     if answers['item'] == 'delete post':
-        # filter .html files
-        places = [y[1] for x, y in post_data.items() if x != 0]
+        # filter the files
+        places = [y[0] for x, y in post_data.items() if x != 0]
          
         post = {
             'type': 'list',
@@ -526,6 +528,7 @@ while True:
         # file selected
         answers = prompt(post, style=style)
         answer = answers['item']
+        answer = [y[1] for x, y in post_data.items() if y[0] == answer][0]
         
         # read the selected file
         with open(os.path.join(base_dir, answer), 'r') as file:
@@ -564,7 +567,8 @@ while True:
         json.dump(post_data, file)
 
 # ===================goals===================
-# -display the choose file with the post header
 # function to print these to table
 
 # s = {post_num: [last_edited, filename, date_created]}
+
+# s = {post_num: [page_title, filename, last_edited, date_created]}

@@ -623,7 +623,8 @@ dthing = {0: ['last_edited', 'index.html', 'date_created'],
     
     
 # print(post_data[0])
-import time
-dict_key = [x for x, y in dthing.items() if x == 2][0]
-dthing[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
+# import time
+# dict_key = [x for x, y in dthing.items() if x == 2][0]
+# dthing[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
+dthing[5] = ['some', 'some', 'some']
 print(dthing)
