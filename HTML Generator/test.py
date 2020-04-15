@@ -75,7 +75,7 @@
 #         else:
 #             soup = BeautifulSoup(i, features='html.parser')
 #             box.p.append(soup)
-    
+
 #     box.p.insert(0, BeautifulSoup("<spam class='code-box2'>$</spam>", features='html.parser'))
 #     code2[x] = box
 
@@ -136,7 +136,7 @@
 # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 # print(__location__)
-# 
+#
 
 # enter = """
 #     <div class='something'>
@@ -180,7 +180,7 @@
 
 # # tag = soup.find('div', {'class': 'wrapper'})
 
-# # body = """ 
+# # body = """
 # # <div class="wrapper">
 # #     <h1>Hello World</h1>
 # # </div>
@@ -252,7 +252,7 @@
 #     else:
 #         box_checker = []
 #         code_box3 = i.find_all('span', {'class' : 'code-box3'})
-        
+
 #         for j in code_box3:
 #             box_checker.append(j.string)
 
@@ -260,10 +260,10 @@
 #         for i,val in enumerate(words):
 #             if val == '$':
 #                 words.remove(val)
-                
+
 #             elif val in box_checker:
 #                 words[i] = f'`{val}`'
-        
+
 #         out = ' '.join(words)
 #         output.append(f'<-{out}->')
 
@@ -376,7 +376,7 @@ import os
 
 #         with open(os.path.join(__location__, filename), 'r') as file:
 #             input_data = file.readlines()
-            
+
 #         # clean the input data
 #         line = []
 #         for i in input_data:
@@ -496,7 +496,7 @@ import os
 #         tag = tle.new_tag('title')
 #         tle.string.wrap(tag)
 #         soup.head.insert(0, tle)
-            
+
 #         # save the edited file
 #         with open(os.path.join(__location__, '../{}.html' .format(title.lower().replace(' ', '-'))), 'w') as file:
 #             file.write(str(soup))
@@ -510,10 +510,10 @@ import os
 
 
 soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
-    
+
 # thing = soup.find('article', class_=f'{1 + 5}')
 # print(thing)
-    
+
 
 # # remember the keep before for the custom desc
 # while True:
@@ -529,10 +529,10 @@ soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
 
 location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 # files = [f for f in os.listdir(f'{loc}/../') + os.listdir(loc) if f.endswith('.html') and not f.startswith('index')]
-                    
+
 # print(files)
 
-# file = open(os.path.join(location, '../hello_v2.html'), 'r+') 
+# file = open(os.path.join(location, '../hello_v2.html'), 'r+')
 
 # print(post.body.header.h1.a.string)
 # num = 1
@@ -574,7 +574,7 @@ cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
 #     if x in dthing.keys():
 # #         print(True)
 # #     else:
-# #         print(False)    
+# #         print(False)
 # cleaned_input = [filter(None, [f.replace('\n', '').strip() for f in input_data])]
 # print(cleaned_input)
 
@@ -602,12 +602,13 @@ cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
 import json
 
 
-# {post_num: [last_edited, filename, date_created]}
-dthing = {0: ['last_edited', 'index.html', 'date_created'],
-          1 : ['last_edited', 'hello_v1', 'date_created'],
-          2 : ['last_edited', 'hello_v2', 'date_created'],
-          3 : ['last_edited', 'hello_v3', 'date_created'],
-          4 : ['last_edited', 'hello_v4', 'date_created']}
+# {post_num: [last_edited, filename, date_created]}{
+table ={"0": ["index", "index.html", "last_edited", "date_created"],
+        "1": ["hello_v1", "hello_v1.html", "last_edited", "date_created"],
+        "2": ["hello_v2", "hello_v2.html", "last_edited", "date_created"],
+        "3": ["hello_v3", "hello_v3.html", "last_edited", "date_created"],
+        "4": ["hello_v4", "hello_v4.html", "last_edited", "date_created"],
+        "5": ["hello_v5", "Pudd2565O9KcSr0jHGWjzguY7FZJUo.html", "2020/04/15 20:47", "2020/04/15 20:46"]}
 
 # places = [y[1] for x, y in dthing.items()]# if x != 0
 # print(dthing[2][1])
@@ -620,11 +621,24 @@ dthing = {0: ['last_edited', 'index.html', 'date_created'],
 # with open(os.path.join(file_dir, 'post_data.json'), "r") as file:
 #     post_data = json.load(file)
 #     post_data = {int(x) : y for x, y in post_data.items()}
-    
-    
+
+
 # print(post_data[0])
 # import time
 # dict_key = [x for x, y in dthing.items() if x == 2][0]
 # dthing[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
-dthing[5] = ['some', 'some', 'some']
-print(dthing)
+# dthing[5] = ['some', 'some', 'some']
+# print(dthing)
+from tabulate import tabulate
+
+# num = [x for x, y in table.items()]
+# title = [y[0] for x, y in table.items()]
+# filename = [y[1] for x, y in table.items()]
+# last = [y[2] for x, y in table.items()]
+# created = [y[3] for x, y in table.items()]
+
+# table =[[1, 'some', 'some'], [2, 'some2', 'some2'], [3, 'some3', 'some3']]
+table = [[x, y[0], y[2], y[3], y[1]] for x, y in table.items()]
+
+headers = 'class', 'title', 'last_edited', 'date_created', 'filename'
+print(tabulate(table, headers, tablefmt="pretty"))

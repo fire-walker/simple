@@ -8,6 +8,7 @@ import string
 import subprocess
 from halo import Halo
 from bs4 import BeautifulSoup
+from tabulate import tabulate
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
 
@@ -25,7 +26,7 @@ purpose = {
     'type': 'list',
     'name': 'item',
     'message': "What's your purpose?",
-    'choices': ['Create Post', 'Edit Post', 'Delete Post'],
+    'choices': ['Create Post', 'Edit Post', 'Delete Post', 'View Post Data'],
     'filter': lambda val: val.lower()
 }
 
@@ -70,16 +71,14 @@ index_edit = {
 }
 
 
-file_dir = os.path.realpath(os.path.join(
-    os.getcwd(), os.path.dirname(__file__)))
-base_dir = os.path.realpath(os.path.join(
-    os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 
 # function to create and edit the seperate post file
 def seperate_post(input_file, post_class, title, filename):
-    file_dir = os.path.realpath(os.path.join(
-        os.getcwd(), os.path.dirname(__file__)))
+    file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    
     with open(os.path.join(file_dir, input_file), 'r') as file:
         input_data = file.readlines()
 
@@ -87,18 +86,14 @@ def seperate_post(input_file, post_class, title, filename):
     cleaned_input = list(
         filter(None, [f.replace('\n', '').strip() for f in input_data]))
 
-    body = BeautifulSoup(
-        f"<article class='{post_class}'></article>", features='html.parser')
+    body = BeautifulSoup(f"<article class='{post_class}'></article>", features='html.parser')
 
     # create the whole code box
-    code = {i: j for (i, j) in enumerate(cleaned_input)
-            if j.startswith('<-') and j.endswith('->')}
-    code = {i: j.replace('<-', '').replace('->', '')
-            for (i, j) in code.items()}
+    code = {i: j for (i, j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
+    code = {i: j.replace('<-', '').replace('->', '') for (i, j) in code.items()}
 
     # the lines without the code box
-    cleaned_input = [y for (x, y) in enumerate(
-        cleaned_input) if x not in code.keys()]
+    cleaned_input = [y for (x, y) in enumerate(cleaned_input) if x not in code.keys()]
 
     code2 = {}
     for x, y in code.items():
@@ -121,8 +116,7 @@ def seperate_post(input_file, post_class, title, filename):
                 box.p.append(soup)
                 box.p.append(' ')
 
-        box.p.insert(0, BeautifulSoup(
-            "<span class='code-box2'>$ </span>", features='html.parser'))
+        box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
         code2[x] = box
 
     # create the h1 tag with the class and delete it
@@ -210,8 +204,6 @@ def seperate_post(input_file, post_class, title, filename):
     return cleaned_input
 
 # edit or insert to the index page
-
-
 def index_post(custom_desc, cleaned_input, post_class, filename):
     base_dir = os.path.realpath(os.path.join(
         os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
@@ -566,13 +558,29 @@ while True:
         spinner.stop_and_persist(
             text="Successfully deleted the post and it's remnants", symbol='✔ ')  # ✔
 
+    if answers['item'] == 'view post data':
+
+        spinner = Halo(text='Tabulating data...', spinner='pong', text_color='magenta')
+        spinner.start()
+        time.sleep(4)
+        spinner.stop()
+
+        table = [[x, y[0], y[2], y[3], y[1]] for x, y in post_data.items()]
+
+        headers = 'class', 'title', 'last_edited', 'date_created', 'filename'
+        print(tabulate(table, headers, tablefmt="pretty"))
+
+
     print('='*50 + '\n\n')
     time.sleep(2)
 
     with open(os.path.join(file_dir, 'post_data.json'), "w") as file:
         json.dump(post_data, file)
 
+
+
 # ===================goals===================
-# function to print these to a table
+# ?????????????
+
 
 # s = {post_num: [page_title, filename.html, last_edited, date_created]}
