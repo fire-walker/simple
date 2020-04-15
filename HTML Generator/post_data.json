@@ -1,1 +1,8 @@
-{"0": ["index", "index.html", "last_edited", "date_created"], "1": ["hello_v1", "hello_v1", "last_edited", "date_created"], "2": ["hello_v2", "hello_v2", "last_edited", "date_created"], "3": ["hello_v3", "hello_v3", "last_edited", "date_created"], "4": ["hello_v4", "hello_v4", "last_edited", "date_created"], "5": ["hello_v5", "z47MynTCJh3DHctzQv3EG5rT1POSSE", "2020/04/15 20:27", "2020/04/15 20:25"]}
+{
+    "0": ["index", "index.html", "last_edited", "date_created"],
+    "1": ["hello_v1", "hello_v1.html", "last_edited", "date_created"],
+    "2": ["hello_v2", "hello_v2.html", "last_edited", "date_created"],
+    "3": ["hello_v3", "hello_v3.html", "last_edited", "date_created"],
+    "4": ["hello_v4", "hello_v4.html", "last_edited", "date_created"],
+    "5": ["hello_v5", "z47MynTCJh3DHctzQv3EG5rT1POSSE.html", "2020/04/15 20:27", "2020/04/15 20:25"]
+}

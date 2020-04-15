@@ -3,14 +3,11 @@ from __future__ import print_function, unicode_literals
 import os
 import time
 import json
-import curses
 import random
 import string
-import platform
 import subprocess
 from halo import Halo
 from bs4 import BeautifulSoup
-from datetime import datetime
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
  
@@ -295,7 +292,7 @@ while True:
         post_class = int(tag[0]['class'][0]) + 1   
         
         # generate filename
-        filename = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
+        filename = f"{''.join(random.choices(string.ascii_letters + string.digits, k=30))}.html"
             
         # update the json of the post creation
         post_data[post_class] = [title, filename, time.strftime('%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
@@ -567,8 +564,6 @@ while True:
         json.dump(post_data, file)
 
 # ===================goals===================
-# function to print these to table
+# function to print these to a table
 
-# s = {post_num: [last_edited, filename, date_created]}
-
-# s = {post_num: [page_title, filename, last_edited, date_created]}
+# s = {post_num: [page_title, filename.html, last_edited, date_created]}
