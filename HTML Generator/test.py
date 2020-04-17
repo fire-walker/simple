@@ -505,11 +505,11 @@ import os
 # seperate_post('input.txt', 2)
 
 # thing = [1, 2, 3, 4, 5]
-# for i in thing[1:]:
-#     print(i)
+# # for i in thing[1:]:
+# #     print(i)
 
 
-soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
+# soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
 
 # thing = soup.find('article', class_=f'{1 + 5}')
 # print(thing)
@@ -522,13 +522,13 @@ soup = BeautifulSoup('<p>something mate</p>', features='html.parser')
 #         break
 
 # print(soup)
-# para = 'something'
-# soup.p.string = para
-# # print(soup
-# import os
+# # para = 'something'
+# # soup.p.string = para
+# # # print(soup
+# # import os
 
-location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-# files = [f for f in os.listdir(f'{loc}/../') + os.listdir(loc) if f.endswith('.html') and not f.startswith('index')]
+# location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+# # files = [f for f in os.listdir(f'{loc}/../') + os.listdir(loc) if f.endswith('.html') and not f.startswith('index')]
 
 # print(files)
 
@@ -552,11 +552,11 @@ location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.di
 # time.sleep(5)
 # spinner.stop()
 
-# file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-# base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
-# code = {i:j for (i,j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
-# code = {i:j.replace('<-', '').replace('->', '') for (i,j) in code.items()}
+# # file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# # base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
+# cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
+# # code = {i:j for (i,j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
+# # code = {i:j.replace('<-', '').replace('->', '') for (i,j) in code.items()}
 # print(code)
 # line = []
 # for i in input_data:
@@ -599,16 +599,16 @@ cleaned_input = ['some', 'thing', '<-some->\n', '<-dude->']
 # import string
 # filename = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
 # print(filename)
-import json
+# import json
 
 
-# {post_num: [last_edited, filename, date_created]}{
-table ={"0": ["index", "index.html", "last_edited", "date_created"],
-        "1": ["hello_v1", "hello_v1.html", "last_edited", "date_created"],
-        "2": ["hello_v2", "hello_v2.html", "last_edited", "date_created"],
-        "3": ["hello_v3", "hello_v3.html", "last_edited", "date_created"],
-        "4": ["hello_v4", "hello_v4.html", "last_edited", "date_created"],
-        "5": ["hello_v5", "Pudd2565O9KcSr0jHGWjzguY7FZJUo.html", "2020/04/15 20:47", "2020/04/15 20:46"]}
+# # {post_num: [last_edited, filename, date_created]}{
+# table ={"0": ["index", "index.html", "last_edited", "date_created"],
+#         "1": ["hello_v1", "hello_v1.html", "last_edited", "date_created"],
+#         "2": ["hello_v2", "hello_v2.html", "last_edited", "date_created"],
+#         "3": ["hello_v3", "hello_v3.html", "last_edited", "date_created"],
+#         "4": ["hello_v4", "hello_v4.html", "last_edited", "date_created"],
+#         "5": ["hello_v5", "Pudd2565O9KcSr0jHGWjzguY7FZJUo.html", "2020/04/15 20:47", "2020/04/15 20:46"]}
 
 # places = [y[1] for x, y in dthing.items()]# if x != 0
 # print(dthing[2][1])
@@ -629,16 +629,105 @@ table ={"0": ["index", "index.html", "last_edited", "date_created"],
 # dthing[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
 # dthing[5] = ['some', 'some', 'some']
 # print(dthing)
-from tabulate import tabulate
+# from tabulate import tabulate
 
-# num = [x for x, y in table.items()]
-# title = [y[0] for x, y in table.items()]
-# filename = [y[1] for x, y in table.items()]
-# last = [y[2] for x, y in table.items()]
-# created = [y[3] for x, y in table.items()]
+# # num = [x for x, y in table.items()]
+# # title = [y[0] for x, y in table.items()]
+# # filename = [y[1] for x, y in table.items()]
+# # last = [y[2] for x, y in table.items()]
+# # created = [y[3] for x, y in table.items()]
 
-# table =[[1, 'some', 'some'], [2, 'some2', 'some2'], [3, 'some3', 'some3']]
-table = [[x, y[0], y[2], y[3], y[1]] for x, y in table.items()]
+# # table =[[1, 'some', 'some'], [2, 'some2', 'some2'], [3, 'some3', 'some3']]
+# table = [[x, y[0], y[2], y[3], y[1]] for x, y in table.items()]
 
-headers = 'class', 'title', 'last_edited', 'date_created', 'filename'
-print(tabulate(table, headers, tablefmt="pretty"))
+# headers = 'class', 'title', 'last_edited', 'date_created', 'filename'
+# print(tabulate(table, headers, tablefmt="pretty"))
+
+# import sys
+# from termcolor import colored, cprint
+
+# text = colored('Hello, World!', 'red', attrs=['reverse', 'blink'])
+# print(text)
+# cprint('Hello, World!', 'green', 'on_red')
+
+
+# def print_red_on_cyan(x): return cprint(x, 'red', 'on_cyan')
+
+
+# print_red_on_cyan('Hello, World!')
+# print_red_on_cyan('Hello, Universe!')
+
+# for i in range(10):
+#     cprint(i, 'magenta', end=' ')
+
+# cprint("Attention!", 'red', attrs=['bold'], file=sys.stderr)
+
+from PyInquirer import Validator, ValidationError
+from PyInquirer import style_from_dict, Token, prompt
+
+style = style_from_dict({
+    Token.QuestionMark: '#000',
+    Token.Selected: '#535353',
+    Token.Pointer: '#535353 bold',
+    Token.Instruction: '#000',
+    Token.Answer: '#535353',
+    Token.Question: '#E47687',
+})
+
+custom_desc_input_edit = {
+    'type': 'input',
+    'name': 'item',
+    'message': "thing is the default\n  Enter new description:"
+}
+
+# custom_title_input_edit = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter new page title name:"
+# }
+
+# custom_title_input_edit = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter new page title name:"
+# }
+
+# index_title_input_edit = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter new index page title:"
+# }
+
+# index_desc_input_edit = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter new description:"
+# }
+
+# index_header_input_edit = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter new header:"
+# }
+
+# custom_desc_input = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter description:"
+# }
+
+# custom_title_input = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter page title name:"
+# }
+
+custom_desc = prompt(custom_desc_input_edit, style=style)['item']
+
+
+
+
+
+
+
+

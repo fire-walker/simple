@@ -12,7 +12,6 @@ from tabulate import tabulate
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
 
-
 style = style_from_dict({
     Token.QuestionMark: '#000',
     Token.Selected: '#535353',
@@ -69,6 +68,41 @@ index_edit = {
     'choices': ['Site_header', 'Site_description', 'Index_page_title'],
     'filter': lambda val: val.lower()
 }
+
+
+
+
+custom_desc_input_edit = {
+    'type': 'input',
+    'name': 'item',
+    'message': "Enter new description:"
+}
+
+custom_title_input_edit = {
+    'type': 'input',
+    'name': 'item',
+    'message': "Enter new page title name:"
+}
+
+custom_title_input_edit = {
+    'type': 'input',
+    'name': 'item',
+    'message': "Enter new page title name:"
+}
+
+custom_desc_input = {
+    'type': 'input',
+    'name': 'item',
+    'message': "Enter description:"
+}
+
+custom_title_input = {
+    'type': 'input',
+    'name': 'item',
+    'message': "Enter page title name:"
+}
+
+
 
 
 file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -274,11 +308,11 @@ while True:
 
     if answers['item'] == "create post":
         # inputs
-        title = input("Enter the page title name: ")
+        title = prompt(custom_title_input, style=style)['item']
 
         custom_desc = prompt(custom_desc, style=style)
         if custom_desc['item'] == 'yes':
-            custom_desc = input('Enter the description: ')
+            custom_desc = prompt(custom_desc_input, style=style)['item']
         else:
             custom_desc = 'no'
 
@@ -342,8 +376,12 @@ while True:
 
             # alterations
             if function == 'site_header':
-                print(f'Current header: {body.body.header.h1.a.string}')
-                header_string = input("Enter new header: ")
+                index_header_input_edit = {
+                    'type': 'input',
+                    'name': 'item',
+                    'message': f"Current header: {body.body.header.h1.a.string}\n  Enter new header:"
+                }
+                header_string = prompt(index_header_input_edit, style=style)['item']
                 body.body.header.h1.a.string = header_string
 
                 # filter the posts for filenames
@@ -361,18 +399,25 @@ while True:
                     file.close()
 
                     # update the json last edited time of the posts
-                    dict_key = [x for x, y in post_data.items()
-                                if y[0] == i][0]
+                    dict_key = [x for x, y in post_data.items() if y[1] == i][0]
                     post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
 
             elif function == 'site_description':
-                print(f'Current description:\n{body.body.header.p.string}')
-                desc_string = input("Enter new description:\n")
+                index_desc_input_edit = {
+                    'type': 'input',
+                    'name': 'item',
+                    'message': "Current description:\n{body.body.header.p.string}\n  Enter new description:"
+                }
+                desc_string = prompt(index_desc_input_edit, style=style)['item']
                 body.body.header.p.string = desc_string
 
             elif function == 'index_page_title':
-                print(f'Current index title: {body.head.title.string}')
-                title_string = input("Enter new index page title: ")
+                index_title_input_edit = {
+                    'type': 'input',
+                    'name': 'item',
+                    'message': f"Current index title: {body.head.title.string}\n  Enter new index page title:"
+                }
+                title_string = prompt(index_title_input_edit, style=style)['item']
                 body.head.title.string = title_string
 
             # save the modifications
@@ -393,13 +438,13 @@ while True:
             # format the inputs
             custom_title = prompt(custom_title_edit, style=style)
             if custom_title['item'] == 'yes':
-                title = input("Enter new page title name: ")
+                title = prompt(custom_title_input_edit, style=style)['item']
             else:
                 title = body.head.title.string
 
             custom_desc = prompt(custom_desc_edit, style=style)
             if custom_desc['item'] == 'yes':
-                custom_desc = input('Enter new description: ')
+                custom_desc = prompt(custom_desc_input_edit, style=style)['item']
             else:
                 custom_desc = custom_desc['item']
 
