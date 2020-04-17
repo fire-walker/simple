@@ -662,23 +662,23 @@ import os
 
 # cprint("Attention!", 'red', attrs=['bold'], file=sys.stderr)
 
-from PyInquirer import Validator, ValidationError
-from PyInquirer import style_from_dict, Token, prompt
+# from PyInquirer import Validator, ValidationError
+# from PyInquirer import style_from_dict, Token, prompt
 
-style = style_from_dict({
-    Token.QuestionMark: '#000',
-    Token.Selected: '#535353',
-    Token.Pointer: '#535353 bold',
-    Token.Instruction: '#000',
-    Token.Answer: '#535353',
-    Token.Question: '#E47687',
-})
+# style = style_from_dict({
+#     Token.QuestionMark: '#000',
+#     Token.Selected: '#535353',
+#     Token.Pointer: '#535353 bold',
+#     Token.Instruction: '#000',
+#     Token.Answer: '#535353',
+#     Token.Question: '#E47687',
+# })
 
-custom_desc_input_edit = {
-    'type': 'input',
-    'name': 'item',
-    'message': "thing is the default\n  Enter new description:"
-}
+# custom_desc_input_edit = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "thing is the default\n  Enter new description:"
+# }
 
 # custom_title_input_edit = {
 #     'type': 'input',
@@ -722,7 +722,7 @@ custom_desc_input_edit = {
 #     'message': "Enter page title name:"
 # }
 
-custom_desc = prompt(custom_desc_input_edit, style=style)['item']
+# custom_desc = prompt(custom_desc_input_edit, style=style)['item']
 
 
 

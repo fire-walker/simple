@@ -109,8 +109,8 @@ file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__))
 base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 
-# function to create and edit the seperate post file
-def seperate_post(input_file, post_class, title, filename):
+# function to create and edit the separate post file
+def separate_post(input_file, post_class, title, filename):
     file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     
     with open(os.path.join(file_dir, input_file), 'r') as file:
@@ -162,9 +162,9 @@ def seperate_post(input_file, post_class, title, filename):
 
     # tag the remaining paragraphs and do the inner formatting
     for i in cleaned_input[1:]:
-        seperated = i.split(' ')
+        separated = i.split(' ')
 
-        for i, j in enumerate(seperated):
+        for i, j in enumerate(separated):
 
             # links
             if j.startswith('<:') and j.endswith(':>'):
@@ -175,7 +175,7 @@ def seperate_post(input_file, post_class, title, filename):
                 tag = soup.new_tag('a', href=elements[1])
                 tag['class'] = 'link'
                 tag.string = elements[0]
-                seperated[i] = str(soup.append(tag))
+                separated[i] = str(soup.append(tag))
 
             # code snippets
             elif j.startswith('<~') and j.endswith('~>'):
@@ -185,7 +185,7 @@ def seperate_post(input_file, post_class, title, filename):
                 tag = soup.new_tag('span')
                 tag['class'] = 'code-snippet'
                 tag.string = j
-                seperated[i] = str(soup.append(tag))
+                separated[i] = str(soup.append(tag))
 
             # bold
             elif j.startswith('<**') and j.endswith('**>'):
@@ -194,7 +194,7 @@ def seperate_post(input_file, post_class, title, filename):
                 soup = BeautifulSoup('', features='html.parser')
                 tag = soup.new_tag('b')
                 tag.string = j
-                seperated[i] = str(soup.append(tag))
+                separated[i] = str(soup.append(tag))
 
             # italic
             elif j.startswith('<*') and j.endswith('*>'):
@@ -203,10 +203,10 @@ def seperate_post(input_file, post_class, title, filename):
                 soup = BeautifulSoup('', features='html.parser')
                 tag = soup.new_tag('i')
                 tag.string = j
-                seperated[i] = str(soup.append(tag))
+                separated[i] = str(soup.append(tag))
 
         soup = BeautifulSoup('', features='html.parser')
-        para = BeautifulSoup(' '.join(seperated), features='html.parser')
+        para = BeautifulSoup(' '.join(separated), features='html.parser')
         tag = soup.new_tag('p')
         tag['class'] = 'article-p'
         soup.append(tag)
@@ -298,7 +298,6 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
 
     return body
 
-
 while True:
     answers = prompt(purpose, style=style)
 
@@ -330,9 +329,9 @@ while True:
         # update the json of the post creation
         post_data[post_class] = [title, filename, time.strftime(
             '%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
-
+        
         # the heavy work
-        cleaned_input = seperate_post('input.txt', post_class, title, filename)
+        cleaned_input = separate_post('input.txt', post_class, title, filename)
         body = index_post(custom_desc, cleaned_input, post_class, filename)
 
         # find the editing location of the source file
@@ -507,7 +506,7 @@ while True:
             subprocess.run(["notepad", loc])
 
             # the heavy work
-            cleaned_input = seperate_post('temp', post_class, title, answer)
+            cleaned_input = separate_post('temp', post_class, title, answer)
             body = index_post(custom_desc, cleaned_input, post_class, answer)
 
             # delete the temp
@@ -621,7 +620,6 @@ while True:
 
     with open(os.path.join(file_dir, 'post_data.json'), "w") as file:
         json.dump(post_data, file)
-
 
 
 # ===================goals===================
