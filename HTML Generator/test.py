@@ -725,9 +725,82 @@ import os
 # custom_desc = prompt(custom_desc_input_edit, style=style)['item']
 
 
+# thing = 'some.txt'
+
+# endings = ('.png')
+# if thing.endswith(endings):
+# #     print('True')
+# # else:
+# #     print(False)
+
+# from bs4 import BeautifulSoup
+
+# soup = BeautifulSoup("<source>", features='html.parser')
+# # soup.img['src'] = 'some.jpg'
+# print(soup)
+
+# # thing = 'some'
+# # if thing != '':
+# #     print(True)
+
+thing = {
+    "0": [
+        "index",
+        "index.html",
+        "2020/04/17 19:46",
+        "date_created"
+    ],
+    "1": [
+        "hello_v1",
+        "hello_v1.html",
+        "2020/04/17 19:46",
+        "date_created"
+    ],
+    "2": [
+        "hello_v2",
+        "hello_v2.html",
+        "2020/04/17 19:46",
+        "date_created"
+    ],
+    "3": [
+        "hello_v3",
+        "hello_v3.html",
+        "2020/04/17 19:46",
+        "date_created"
+    ],
+    "5": [
+        "hello_v5",
+        "Pudd2565O9KcSr0jHGWjzguY7FZJUo.html",
+        "2020/04/17 19:46",
+        "2020/04/15 20:46"
+    ],
+    "6": [
+        "hello_v4",
+        "z0FTLyrS9CiLk333J14oaCyB1hyQqR.html",
+        "2020/04/21 20:08",
+        "2020/04/21 20:08"
+    ]
+}
+
+# dict_key = [x for x, y in thing.items() if y[1] == 'hello_v3.html']
+# del dict_key
 
 
+# thing = {x : y for x, y in thing.items() if y[1] != 'hello_v3.html'}
+# print(thing)
 
+thing = {
+    0 : 'sdfg',
+    1 : 'sdfh',
+    2 : 'asdgf'
+}
 
+some = 0, 8, 6
 
+for x, y in {x : y for (x, y) in thing.items() if x not in some and x != 2}.items():
+    print(x)
 
+# thing = {x: y for (x, y) in thing.items() if x == 4}
+# if thing == {}:
+#     print(True)
+# print(thing)

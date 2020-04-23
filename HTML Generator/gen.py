@@ -1,16 +1,20 @@
 from __future__ import print_function, unicode_literals
 
 import os
+import sys
 import time
 import json
 import random
 import string
+import shutil
 import subprocess
 from halo import Halo
 from bs4 import BeautifulSoup
 from tabulate import tabulate
+from tkinter import Tk, filedialog
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
+
 
 style = style_from_dict({
     Token.QuestionMark: '#000',
@@ -108,6 +112,25 @@ custom_title_input = {
 file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
+# video and image chooser
+def tk_get_file_path():
+    root = Tk()
+    root.withdraw()
+    
+    file_path = root.tk.splitlist(filedialog.askopenfilenames(parent=root, title='Choose the file(s)'))
+    if not file_path:
+        print("Cancelled")
+        sys.exit()
+
+    try:
+        for file in file_path:
+            with open(file, 'r'):
+                pass
+    except IOError:
+        print("Cancelled")
+        sys.exit()
+
+    return file_path
 
 # function to create and edit the separate post file
 def separate_post(input_file, post_class, title, filename):
@@ -117,52 +140,81 @@ def separate_post(input_file, post_class, title, filename):
         input_data = file.readlines()
 
     # clean the input data
-    cleaned_input = list(
-        filter(None, [f.replace('\n', '').strip() for f in input_data]))
+    cleaned_output = list(filter(None, [f.replace('\n', '').strip() for f in input_data]))
+    cleaned_input = {x : y for (x, y) in enumerate(cleaned_output)}
 
-    body = BeautifulSoup(f"<article class='{post_class}'></article>", features='html.parser')
+    non_para = []
 
-    # create the whole code box
-    code = {i: j for (i, j) in enumerate(cleaned_input) if j.startswith('<-') and j.endswith('->')}
+    # code box
+    code = {i: j for (i, j) in cleaned_input.items() if j.startswith('<-') and j.endswith('->')}
     code = {i: j.replace('<-', '').replace('->', '') for (i, j) in code.items()}
 
-    # the lines without the code box
-    cleaned_input = [y for (x, y) in enumerate(cleaned_input) if x not in code.keys()]
+    if code != {}:
+        for x, y in code.items():
+            non_para.append(x)
+            words = y.split(' ')
+            box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
 
-    code2 = {}
-    for x, y in code.items():
-        words = y.split(' ')
-        box = BeautifulSoup("<p class='code-box'></p>", features='html.parser')
+            for i in words:
+                i = "".join(i.split())
+                if i.startswith('`') and i.endswith('`'):
+                    i = i.replace('`', '')
 
-        for i in words:
-            i = "".join(i.split())
-            if i.startswith('`') and i.endswith('`'):
-                i = i.replace('`', '')
+                    soup = BeautifulSoup(i, features='html.parser')
+                    tag = soup.new_tag('span')
+                    tag['class'] = 'code-box3'
+                    soup.string.wrap(tag)
+                    box.p.append(soup)
+                    box.p.append(' ')
+                else:
+                    soup = BeautifulSoup(i, features='html.parser')
+                    box.p.append(soup)
+                    box.p.append(' ')
 
-                soup = BeautifulSoup(i, features='html.parser')
-                tag = soup.new_tag('span')
-                tag['class'] = 'code-box3'
-                soup.string.wrap(tag)
-                box.p.append(soup)
-                box.p.append(' ')
-            else:
-                soup = BeautifulSoup(i, features='html.parser')
-                box.p.append(soup)
-                box.p.append(' ')
-
-        box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
-        code2[x] = box
+            box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
+            cleaned_input[x] = box
+        
+    # img and vid generation
+    media = {i: j for (i, j) in cleaned_input.items() if j == '<media>'}    
+    
+    if media != {}:
+        for x, y in media.items():
+            non_para.append(x)
+            files = tk_get_file_path()
+            cleaned_input[x] = []
+            
+            media = []
+            for i in files:
+                media_name = os.path.basename(i)
+                media.append(media_name)
+                shutil.copyfile(i, os.path.join(file_dir, f"../media/{media_name}"))
+                
+            image_endings = ('.png', '.jpg', '.jpeg')
+            for i in media:
+                if i.endswith(image_endings):
+                    soup = BeautifulSoup('<img>', features='html.parser')
+                    soup.img['src'] = f"media/{i}"
+                    cleaned_input[x].append(soup)
+                    
+                else:
+                    extension = os.path.splitext(i)[1].replace('.', '')
+                    soup = BeautifulSoup("<video controls>", features='html.parser')
+                    tag = BeautifulSoup('<source>', features='html.parser')
+                    tag.source['src'] = f"media/{i}"
+                    tag.source['type'] = f'video/{extension}'
+                    soup.video.append(tag)
+                    cleaned_input[x].append(soup)
 
     # create the h1 tag with the class and delete it
     header = BeautifulSoup(cleaned_input[0], features='html.parser')
     tag = header.new_tag('h1')
     tag['class'] = 'article-h1'
     header.string.wrap(tag)
-    body.article.append(header)
+    cleaned_input[0] = header
 
     # tag the remaining paragraphs and do the inner formatting
-    for i in cleaned_input[1:]:
-        separated = i.split(' ')
+    for x, y in {x : y for (x, y) in cleaned_input.items() if x != 0 and x not in non_para}.items():
+        separated = y.split(' ')
 
         for i, j in enumerate(separated):
 
@@ -211,14 +263,19 @@ def separate_post(input_file, post_class, title, filename):
         tag['class'] = 'article-p'
         soup.append(tag)
         soup.p.append(para)
-        body.article.append(soup)
+        cleaned_input[x] = soup
 
-    # insert the codeboxes to the body
-    for x, y in code2.items():
-        body.article.insert(x, y)
+    body = BeautifulSoup(f"<article class='{post_class}'></article>", features='html.parser')
 
+    for x, y in cleaned_input.items():
+        if type(y) == list:
+            for i in y:
+                body.article.append(i)
+        else:
+            body.article.append(y)
+        
     # open the template source file
-    with open(os.path.join(file_dir, '../template.html'), 'r') as file:
+    with open(os.path.join(file_dir, '../assets/template.html'), 'r') as file:
         soup = BeautifulSoup(file, features="html.parser")
 
     # find the insertion location of the template
@@ -235,7 +292,7 @@ def separate_post(input_file, post_class, title, filename):
     with open(os.path.join(file_dir, '../{}' .format(filename)), 'w') as file:
         file.write(str(soup))
 
-    return cleaned_input
+    return cleaned_output
 
 # edit or insert to the index page
 def index_post(custom_desc, cleaned_input, post_class, filename):
@@ -298,10 +355,11 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
 
     return body
 
+
 while True:
     answers = prompt(purpose, style=style)
 
-    with open(os.path.join(file_dir, 'post_data.json'), "r") as file:
+    with open(os.path.join(base_dir, 'assets/post_data.json'), "r") as file:
         post_data = json.load(file)
         post_data = {int(x): y for x, y in post_data.items()}
 
@@ -327,8 +385,7 @@ while True:
         filename = f"{''.join(random.choices(string.ascii_letters + string.digits, k=30))}.html"
 
         # update the json of the post creation
-        post_data[post_class] = [title, filename, time.strftime(
-            '%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
+        post_data[post_class] = [title, filename, time.strftime('%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
         
         # the heavy work
         cleaned_input = separate_post('input.txt', post_class, title, filename)
@@ -341,12 +398,11 @@ while True:
         # save the new edited source file
         with open(os.path.join(file_dir, '../index.html'), 'w') as file:
             file.write(str(main_index))
-        spinner = Halo(text='Creating post...',
-                       spinner='pong', text_color='magenta')
+            
+        spinner = Halo(text='Creating post...',spinner='pong', text_color='magenta')
         spinner.start()
         time.sleep(4)
-        spinner.stop_and_persist(
-            text="New post successfully created and appended to the index", symbol='✔ ')  # ✔
+        spinner.stop_and_persist(text="New post successfully created and appended to the index", symbol='✔ ')  # ✔
 
     if answers['item'] == "edit post":
         # filter files
@@ -370,10 +426,8 @@ while True:
 
         # check if it's the index or a post that's being edited
         if answer == 'index.html':
-            # select what to edit
             function = prompt(index_edit, style=style)['item']
-
-            # alterations
+            
             if function == 'site_header':
                 index_header_input_edit = {
                     'type': 'input',
@@ -400,6 +454,17 @@ while True:
                     # update the json last edited time of the posts
                     dict_key = [x for x, y in post_data.items() if y[1] == i][0]
                     post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
+                    
+                # edit the template file
+                file = open(os.path.join(base_dir, 'assets/template.html'), 'r')
+                post = BeautifulSoup(file, features='html.parser')
+                file.close()
+
+                post.body.header.h1.a.string = header_string
+
+                file = open(os.path.join(base_dir, 'assets/template.html'), 'w')
+                file.write(str(post))
+                file.close()
 
             elif function == 'site_description':
                 index_desc_input_edit = {
@@ -430,8 +495,7 @@ while True:
                            spinner='pong', text_color='magenta')
             spinner.start()
             time.sleep(4)
-            spinner.stop_and_persist(
-                text="Successfully edited the index file and associations", symbol='✔ ')  # ✔
+            spinner.stop_and_persist(text="Successfully edited the index file and associations", symbol='✔ ')  # ✔
 
         else:
             # format the inputs
@@ -580,8 +644,7 @@ while True:
 
         # delete the file and info from json
         os.remove(os.path.join(base_dir, answer))
-        dict_key = [x for x, y in post_data.items() if y[1] == answer][0]
-        del dict_key
+        post_data = {x : y for x, y in post_data.items() if y[1] != answer}
 
         # read the index file
         with open(os.path.join(base_dir, 'index.html'), 'r') as file:
@@ -595,12 +658,10 @@ while True:
         with open(os.path.join(base_dir, 'index.html'), 'w') as file:
             file.write(str(body))
 
-        spinner = Halo(text='Deleting post...',
-                       spinner='pong', text_color='magenta')
+        spinner = Halo(text='Deleting post...',spinner='pong', text_color='magenta')
         spinner.start()
         time.sleep(4)
-        spinner.stop_and_persist(
-            text="Successfully deleted the post and it's remnants", symbol='✔ ')  # ✔
+        spinner.stop_and_persist(text="Successfully deleted the post and it's remnants", symbol='✔ ')  # ✔
 
     if answers['item'] == 'view post data':
 
@@ -618,12 +679,15 @@ while True:
     print('='*50 + '\n\n')
     time.sleep(2)
 
-    with open(os.path.join(file_dir, 'post_data.json'), "w") as file:
+    with open(os.path.join(base_dir, 'assets/post_data.json'), "w") as file:
         json.dump(post_data, file)
 
 
 # ===================goals===================
-# ?????????????
-
+# make an image and video tag which opens up a file navigater to select it
+# make a site refresh thing, where the title, header and paras are kept but the template is updated
+# when deleting an article delete it's media presence also
+# error checking, checksums, title matches
 
 # s = {post_num: [page_title, filename.html, last_edited, date_created]}
+ 
