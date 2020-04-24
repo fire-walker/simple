@@ -717,7 +717,7 @@ while True:
         json.dump(post_data, file)
 
 
-# ===================goals===================
+# ===================goals/problems===================
 # make a site refresh thing, where the title, header and paras are kept but the template is updated
 # error checking, checksums, title matches
 
