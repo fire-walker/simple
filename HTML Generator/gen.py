@@ -143,12 +143,17 @@ def separate_post(input_file, post_class, title, filename):
     cleaned_output = list(filter(None, [f.replace('\n', '').strip() for f in input_data]))
     cleaned_input = {x : y for (x, y) in enumerate(cleaned_output)}
 
-    non_para = []
+    non_para = [0]
 
     # code box
     code = {i: j for (i, j) in cleaned_input.items() if j.startswith('<-') and j.endswith('->')}
     code = {i: j.replace('<-', '').replace('->', '') for (i, j) in code.items()}
+    
+    # img and vid
+    media = {i: j for (i, j) in cleaned_input.items() if j == '<media>'}    
+    media_old = {i: j for (i, j) in cleaned_input.items() if j.startswith('<media--')}
 
+    # code box creation
     if code != {}:
         for x, y in code.items():
             non_para.append(x)
@@ -173,37 +178,57 @@ def separate_post(input_file, post_class, title, filename):
 
             box.p.insert(0, BeautifulSoup("<span class='code-box2'>$ </span>", features='html.parser'))
             cleaned_input[x] = box
-        
-    # img and vid generation
-    media = {i: j for (i, j) in cleaned_input.items() if j == '<media>'}    
-    
+
+    # media generation
+    media_files = []
+    # new
     if media != {}:
         for x, y in media.items():
             non_para.append(x)
             files = tk_get_file_path()
             cleaned_input[x] = []
             
-            media = []
+            
+            image_endings = ('.png', '.jpg', '.jpeg')
             for i in files:
                 media_name = os.path.basename(i)
-                media.append(media_name)
+                media_files.append(media_name)
                 shutil.copyfile(i, os.path.join(file_dir, f"../media/{media_name}"))
                 
-            image_endings = ('.png', '.jpg', '.jpeg')
-            for i in media:
-                if i.endswith(image_endings):
-                    soup = BeautifulSoup('<img>', features='html.parser')
-                    soup.img['src'] = f"media/{i}"
+                if media_name.endswith(image_endings):
+                    soup = BeautifulSoup('<p><img>', features='html.parser')
+                    soup.p['class'] = 'article-img'
+                    soup.img['src'] = f"media/{media_name}"
                     cleaned_input[x].append(soup)
                     
                 else:
-                    extension = os.path.splitext(i)[1].replace('.', '')
-                    soup = BeautifulSoup("<video controls>", features='html.parser')
-                    tag = BeautifulSoup('<source>', features='html.parser')
-                    tag.source['src'] = f"media/{i}"
-                    tag.source['type'] = f'video/{extension}'
-                    soup.video.append(tag)
+                    extension = os.path.splitext(media_name)[1].replace('.', '')
+                    soup = BeautifulSoup("<p><video controls><source>", features='html.parser')
+                    soup.p['class'] = 'article-vid'
+                    soup.source['src'] = f"media/{media_name}"
+                    soup.source['type'] = f'video/{extension}'
                     cleaned_input[x].append(soup)
+    # old
+    if media_old != {}:
+        for x, y in media_old.items():
+            non_para.append(x)
+            files = y.split('--')[1].replace('>', '')
+            media_files.append(files)
+
+            image_endings = ('.png', '.jpg', '.jpeg')
+            if files.endswith(image_endings):
+                soup = BeautifulSoup('<p><img>', features='html.parser')
+                soup.p['class'] = 'article-img'
+                soup.img['src'] = f"media/{files}"
+                cleaned_input[x] = soup
+
+            else:
+                extension = os.path.splitext(files)[1].replace('.', '')
+                soup = BeautifulSoup("<p><video controls><source>", features='html.parser')
+                soup.p['class'] = 'article-vid'
+                soup.source['src'] = f"media/{files}"
+                soup.source['type'] = f'video/{extension}'
+                cleaned_input[x] = soup
 
     # create the h1 tag with the class and delete it
     header = BeautifulSoup(cleaned_input[0], features='html.parser')
@@ -213,7 +238,8 @@ def separate_post(input_file, post_class, title, filename):
     cleaned_input[0] = header
 
     # tag the remaining paragraphs and do the inner formatting
-    for x, y in {x : y for (x, y) in cleaned_input.items() if x != 0 and x not in non_para}.items():
+    thing = {x : y for (x, y) in cleaned_input.items() if x not in non_para}
+    for x, y in thing.items():
         separated = y.split(' ')
 
         for i, j in enumerate(separated):
@@ -291,8 +317,8 @@ def separate_post(input_file, post_class, title, filename):
     # save the edited file
     with open(os.path.join(file_dir, '../{}' .format(filename)), 'w') as file:
         file.write(str(soup))
-
-    return cleaned_output
+    
+    return cleaned_output, media_files
 
 # edit or insert to the index page
 def index_post(custom_desc, cleaned_input, post_class, filename):
@@ -383,13 +409,13 @@ while True:
 
         # generate filename
         filename = f"{''.join(random.choices(string.ascii_letters + string.digits, k=30))}.html"
-
-        # update the json of the post creation
-        post_data[post_class] = [title, filename, time.strftime('%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M')]
         
         # the heavy work
         cleaned_input = separate_post('input.txt', post_class, title, filename)
-        body = index_post(custom_desc, cleaned_input, post_class, filename)
+        body = index_post(custom_desc, cleaned_input[0], post_class, filename)
+
+        # update the json of the post creation
+        post_data[post_class] = [title, filename, time.strftime('%Y/%m/%d %H:%M'), time.strftime('%Y/%m/%d %H:%M'), cleaned_input[1]]
 
         # find the editing location of the source file
         tag = main_index.find('div', {'class': 'wrapper'})
@@ -536,7 +562,7 @@ while True:
                     p = ' '.join(i.get_text().split())
                     output.append(p)
 
-                else:
+                elif i['class'][0] == 'code-box':
                     box_checker = []
                     code_box3 = i.find_all('span', {'class': 'code-box3'})
 
@@ -557,6 +583,14 @@ while True:
 
                     out = ' '.join(words).strip()
                     output.append(f'<-{out}->')
+                
+                elif i['class'][0] == 'article-vid':
+                    out = f"<media--{i.source['src'].split('/')[1]}>"
+                    output.append(out)
+                
+                elif i['class'][0] =='article-img':
+                    out = f"<media--{i.img['src'].split('/')[1]}>"
+                    output.append(out)
 
             # join the whole out list into a single variable
             output = '\n\n'.join(output)
@@ -571,7 +605,7 @@ while True:
 
             # the heavy work
             cleaned_input = separate_post('temp', post_class, title, answer)
-            body = index_post(custom_desc, cleaned_input, post_class, answer)
+            body = index_post(custom_desc, cleaned_input[0], post_class, answer)
 
             # delete the temp
             os.remove(os.path.join(file_dir, 'temp'))
@@ -589,10 +623,8 @@ while True:
 
             x = 1
             while True:
-                post_after = wrapper.find(
-                    'article', class_=f'{post_class - x}')
-                post_before = wrapper.find(
-                    'article', class_=f'{post_class + x}')
+                post_after = wrapper.find('article', class_=f'{post_class - x}')
+                post_before = wrapper.find('article', class_=f'{post_class + x}')
 
                 if post_after is not None:
                     post_after.insert_before(body)
@@ -606,17 +638,24 @@ while True:
             # save the modifications
             with open(os.path.join(base_dir, 'index.html'), 'w') as file:
                 file.write(str(index_whole))
-
+            
             # update the json last edited time
             dict_key = [x for x, y in post_data.items() if y[1] == answer][0]
+            
+            prev_media = post_data[dict_key][4]
             post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
+            post_data[dict_key][4] = cleaned_input[1]
 
-            spinner = Halo(text='Editing post...',
-                           spinner='pong', text_color='magenta')
+            # checking the media files and deleting if necessary
+            for i in prev_media:
+                if i not in cleaned_input[1]:
+                    os.remove(os.path.join(base_dir, f'media/{i}'))
+                    
+
+            spinner = Halo(text='Editing post...', spinner='pong', text_color='magenta')
             spinner.start()
             time.sleep(4)
-            spinner.stop_and_persist(
-                text="Successfully edited post and index file", symbol='✔ ')  # ✔
+            spinner.stop_and_persist(text="Successfully edited post and index file", symbol='✔ ')  # ✔
 
     if answers['item'] == 'delete post':
         # filter the files
@@ -630,33 +669,28 @@ while True:
         }
 
         # file selected
-        answers = prompt(post, style=style)
-        answer = answers['item']
-        answer = [y[1] for x, y in post_data.items() if y[0] == answer][0]
+        answer = prompt(post, style=style)['item']
+        post_num = [x for x, y in post_data.items() if y[0] == answer][0]
 
-        # read the selected file
-        with open(os.path.join(base_dir, answer), 'r') as file:
-            body = BeautifulSoup(file, features='html.parser')
-
-        # find the identifier tag
-        tag = body.find_all('article')[0]
-        post_class = int(tag['class'][0])
-
-        # delete the file and info from json
-        os.remove(os.path.join(base_dir, answer))
-        post_data = {x : y for x, y in post_data.items() if y[1] != answer}
+        # delete the file, images and info from json
+        os.remove(os.path.join(base_dir, post_data[post_num][1]))
+        
+        for i in post_data[post_num][4]:
+            os.remove(os.path.join(base_dir, f'media/{i}'))
 
         # read the index file
         with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
 
         # delete the index entry
-        article = body.find('article', {'class': post_class})
+        article = body.find('article', {'class': post_num})
         article.decompose()
 
         # save the modifications
         with open(os.path.join(base_dir, 'index.html'), 'w') as file:
             file.write(str(body))
+            
+        post_data = {x : y for x, y in post_data.items() if x != post_num}
 
         spinner = Halo(text='Deleting post...',spinner='pong', text_color='magenta')
         spinner.start()
@@ -684,10 +718,8 @@ while True:
 
 
 # ===================goals===================
-# make an image and video tag which opens up a file navigater to select it
 # make a site refresh thing, where the title, header and paras are kept but the template is updated
-# when deleting an article delete it's media presence also
 # error checking, checksums, title matches
 
-# s = {post_num: [page_title, filename.html, last_edited, date_created]}
+# post_data = {post_num: [page_title, filename.html, last_edited, date_created, media_linked]}
  

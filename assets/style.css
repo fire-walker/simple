@@ -9,6 +9,8 @@
 <~snippets~>
 <*italic*>
 <**bold**>
+<media>
+<media--some.png>
 
 */
 
@@ -196,6 +198,7 @@ img {
     padding-bottom: 20px;
     max-height: 400px;
     max-width: 100%;
+    margin: auto;
 }
 
 

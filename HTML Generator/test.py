@@ -735,52 +735,97 @@ import os
 
 # from bs4 import BeautifulSoup
 
-# soup = BeautifulSoup("<source>", features='html.parser')
-# # soup.img['src'] = 'some.jpg'
+i = BeautifulSoup("<p class='article-vid'><video controls=''><source src='media/some2.mp4' type='video/mp4'/></video></p>", features='html.parser')
+# soup.img['src'] = 'some.jpg'
 # print(soup)
+# cleaned_input = {0 : '<media>',
+#                  1 : '<media--some.png'}
+
+# media = {i: j for (i, j) in cleaned_input.items() if j.startswith('<media')}
+# media_new = {i: j for (i, j) in cleaned_input.items() if j == '<media>'}
+# media_old = {i: j for (i, j) in cleaned_input.items() if j.startswith('<media--')}
+
+# if media_old != {}:
+#     for x, y in media_old.items():
+#         files = y.split('--')[1]
+        
+#         image_endings = ('.png', '.jpg', '.jpeg')
+#         if files.endswith(image_endings):
+#             soup = BeautifulSoup('<p><img>', features='html.parser')
+#             soup.p['class'] = 'article-img'
+#             soup.img['src'] = f"media/{files}"
+#             print(soup)
+            
+#         else:
+#             extension = os.path.splitext(files)[1].replace('.', '')
+#             soup = BeautifulSoup("<p><video controls><source>", features='html.parser')
+#             soup.p['class'] = 'article-vid'
+#             soup.source['src'] = f"media/{files}"
+#             soup.source['type'] = f'video/{extension}'
+#             print(soup)
+
+# print(f"<media--{i.source['src'].split('/')[1]}>")
+# thing = {1 : 33,
+#          2 : 576,
+#          3 : 465}
+# print(list(thing.values()))
+# thing2 = [4, 5, 6]
+# thing1 = [4, 6, 7]
+# for i in thing1:
+#     if i not in thing2:
+#         print(i)
+# # print(thing + thing2)
+thing = [1, 3]
+thing2 = {}
+print(thing + list(thing2.values()))
+
+
+# soup = BeautifulSoup('<img>', features='html.parser')
+# soup.img['src'] = f"media/{media_name}"
+# cleaned_input[x].append(soup)
 
 # # thing = 'some'
 # # if thing != '':
 # #     print(True)
 
-thing = {
-    "0": [
-        "index",
-        "index.html",
-        "2020/04/17 19:46",
-        "date_created"
-    ],
-    "1": [
-        "hello_v1",
-        "hello_v1.html",
-        "2020/04/17 19:46",
-        "date_created"
-    ],
-    "2": [
-        "hello_v2",
-        "hello_v2.html",
-        "2020/04/17 19:46",
-        "date_created"
-    ],
-    "3": [
-        "hello_v3",
-        "hello_v3.html",
-        "2020/04/17 19:46",
-        "date_created"
-    ],
-    "5": [
-        "hello_v5",
-        "Pudd2565O9KcSr0jHGWjzguY7FZJUo.html",
-        "2020/04/17 19:46",
-        "2020/04/15 20:46"
-    ],
-    "6": [
-        "hello_v4",
-        "z0FTLyrS9CiLk333J14oaCyB1hyQqR.html",
-        "2020/04/21 20:08",
-        "2020/04/21 20:08"
-    ]
-}
+# thing = {
+#     "0": [
+#         "index",
+#         "index.html",
+#         "2020/04/17 19:46",
+#         "date_created"
+#     ],
+#     "1": [
+#         "hello_v1",
+#         "hello_v1.html",
+#         "2020/04/17 19:46",
+#         "date_created"
+#     ],
+#     "2": [
+#         "hello_v2",
+#         "hello_v2.html",
+#         "2020/04/17 19:46",
+#         "date_created"
+#     ],
+#     "3": [
+#         "hello_v3",
+#         "hello_v3.html",
+#         "2020/04/17 19:46",
+#         "date_created"
+#     ],
+#     "5": [
+#         "hello_v5",
+#         "Pudd2565O9KcSr0jHGWjzguY7FZJUo.html",
+#         "2020/04/17 19:46",
+#         "2020/04/15 20:46"
+#     ],
+#     "6": [
+#         "hello_v4",
+#         "z0FTLyrS9CiLk333J14oaCyB1hyQqR.html",
+#         "2020/04/21 20:08",
+#         "2020/04/21 20:08"
+#     ]
+# }
 
 # dict_key = [x for x, y in thing.items() if y[1] == 'hello_v3.html']
 # del dict_key
@@ -789,16 +834,16 @@ thing = {
 # thing = {x : y for x, y in thing.items() if y[1] != 'hello_v3.html'}
 # print(thing)
 
-thing = {
-    0 : 'sdfg',
-    1 : 'sdfh',
-    2 : 'asdgf'
-}
+# thing = {
+#     0 : 'sdfg',
+#     1 : 'sdfh',
+#     2 : 'asdgf'
+# }
 
-some = 0, 8, 6
+# some = 0, 8, 6
 
-for x, y in {x : y for (x, y) in thing.items() if x not in some and x != 2}.items():
-    print(x)
+# for x, y in {x : y for (x, y) in thing.items() if x not in some and x != 2}.items():
+#     print(x)
 
 # thing = {x: y for (x, y) in thing.items() if x == 4}
 # if thing == {}:
