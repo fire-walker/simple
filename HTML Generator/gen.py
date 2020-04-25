@@ -7,6 +7,7 @@ import json
 import random
 import string
 import shutil
+import hashlib
 import subprocess
 from halo import Halo
 from bs4 import BeautifulSoup
@@ -104,6 +105,13 @@ custom_title_input = {
     'validate': lambda i: len(i) > 1
 }
 
+
+
+post_doubt_edit = {
+    'type': 'confirm',
+    'name': 'item',
+    'message': "Are you sure to continue: [y/n]",
+}
 
 
 
@@ -601,10 +609,26 @@ while True:
             with open(os.path.join(file_dir, 'temp'), 'w') as file:
                 file.write(output)
 
-            # open the temp file for manual editing
-            loc = os.path.join(file_dir, 'temp')
-            subprocess.run(["notepad", loc])
+            with open(os.path.join(file_dir, 'temp'), 'w') as file:
+                output_b = file.read()
+                output_hash_before = hashlib.sha3_512(output_b).hexdigest()  
+                      
+            while True:
+                loc = os.path.join(file_dir, 'temp')
 
+                with open(os.path.join(file_dir, 'temp'), 'rb') as file:
+                    output_b = file.read()
+                    output_hash = hashlib.sha3_512(output_b).hexdigest()
+                    
+                if output_hash == output_hash_before:
+                    doubt = prompt(post_doubt_edit, style=style)['item']
+                    if doubt is False:
+                        continue
+                    else:
+                        break
+                else:
+                    break
+                    
             # the heavy work
             cleaned_input = separate_post('temp', post_class, title, chosen_file)
             body = index_post(custom_desc, cleaned_input[0], post_class, chosen_file)
@@ -642,7 +666,7 @@ while True:
                 file.write(str(index_whole))
             
             # update the json last edited time
-            dict_key = [x for x, y in post_data.items() if y[1] == answer][0]
+            dict_key = [x for x, y in post_data.items() if y[0] == answer][0]
             
             prev_media = post_data[dict_key][4]
             post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')

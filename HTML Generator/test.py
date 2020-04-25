@@ -48,6 +48,49 @@ from tkinter import Tk, filedialog
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
 
+# from cryptography.hazmat.backends import default_backend
+# from cryptography.hazmat.primitives import hashes
+
+
+# digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
+
+# digest.update(b"abc")
+# digest2 = digest.copy()
+# digest2.update(b'abc')
+# digest2.finalize()
+
+# digest.update(b'abc')
+# digest.finalize()
+
+# if digest2 == digest:
+#     print(True)
+# __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+# import hashlib
+
+# with open(os.path.join(__location__, 'input.txt'), 'rb') as file:
+#     first = file.read()
+
+# loc = os.path.join(__location__, 'input.txt')
+# subprocess.run(["notepad", loc])
+
+# with open(os.path.join(__location__, 'input.txt'), 'rb') as file:
+#     second = file.read()
+
+# thing = hashlib.sha3_512(first).hexdigest()
+# thing2 = hashlib.sha3_512(second).hexdigest()
+
+
+# if thing == thing2:
+#     print(True)
+# else:
+#     print(False)
+# digest2 = hashes.Hash(hashes.SHA3_256(), backend=default_backend())
+# digest2.update(b"abc")
+
+# if digest == digest2:
+#     print(True)
+# else:
+#     print(False)
 # custom_desc_input = {
 #     'type': 'input',
 #     'name': 'item',
@@ -55,18 +98,23 @@ from PyInquirer import style_from_dict, Token, prompt
 #     'validate': lambda i: len(i.split(' ')) > 10
 # }
 
-# style = style_from_dict({
-#     Token.QuestionMark: '#000',
-#     Token.Selected: '#535353',
-#     Token.Pointer: '#535353 bold',
-#     Token.Instruction: '#000',
-#     Token.Answer: '#535353',
-#     Token.Question: '#E47687',
-# })
+style = style_from_dict({
+    Token.QuestionMark: '#000',
+    Token.Selected: '#535353',
+    Token.Pointer: '#535353 bold',
+    Token.Instruction: '#000',
+    Token.Answer: '#535353',
+    Token.Question: '#E47687',
+})
 
+post_doubt_edit = {
+    'type': 'confirm',
+    'name': 'item',
+    'message': "Are you sure to continue: [y/n]",
+}
 
-# answers = prompt(custom_desc_input, style=style)
-# print(answers)
+answers = prompt(post_doubt_edit, style=style)
+print(answers)
 
 
 
@@ -115,11 +163,11 @@ from PyInquirer import style_from_dict, Token, prompt
 # print(code2)
 # line = [1, 2, 3, 4, 5, 6, 7, 8]
 
-thing = {2 : 'thing',
-         5 : 'thing'}
+# thing = {2 : 'thing',
+#          5 : 'thing'}
 
-thing = max(thing.keys())
-print(type(thing))
+# thing = max(thing.keys())
+# print(type(thing))
 # t = list(thing.keys())
 # for i in sorted(t, reverse=True):
 #     del line[i]
@@ -882,3 +930,4 @@ import os
 # if thing == {}:
 #     print(True)
 # print(thing)
+
