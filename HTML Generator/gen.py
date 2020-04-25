@@ -79,31 +79,29 @@ index_edit = {
 custom_desc_input_edit = {
     'type': 'input',
     'name': 'item',
-    'message': "Enter new description:"
+    'message': "Enter new description:",
+    'validate': lambda i: len(i.split(' ')) > 10
 }
 
 custom_title_input_edit = {
     'type': 'input',
     'name': 'item',
-    'message': "Enter new page title name:"
-}
-
-custom_title_input_edit = {
-    'type': 'input',
-    'name': 'item',
-    'message': "Enter new page title name:"
+    'message': "Enter new page title name:",
+    'validate': lambda i: len(i) > 2
 }
 
 custom_desc_input = {
     'type': 'input',
     'name': 'item',
-    'message': "Enter description:"
+    'message': "Enter description:",
+    'validate': lambda i: len(i.split(' ')) > 10
 }
 
 custom_title_input = {
     'type': 'input',
     'name': 'item',
-    'message': "Enter page title name:"
+    'message': "Enter page title name:",
+    'validate': lambda i: len(i) > 1
 }
 
 
@@ -381,7 +379,66 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
 
     return body
 
+# convert the html to input data
+def post_structure(body):
+    # find the identifier tag
+    tag = body.find_all('article')[0]
+    
+    # the whole list with the output data
+    output = []
 
+    # add the header to the out list
+    h1 = ' '.join(tag.find('h1').string.split())
+    output.append(h1)
+
+    # add the paragraphs to the out list
+    paragraphs = tag.find_all('p')
+    for i in paragraphs:
+        if i['class'][0] == 'article-p':
+            if i.a is not None:
+                i.a.replace_with(f"<:{i.a.string}--{i.a['href']}:>")
+
+            if i.span is not None:
+                i.span.replace_with(f"<~{i.span.string}~>")
+
+            # to get rid of unnecessary white space
+            p = ' '.join(i.get_text().split())
+            output.append(p)
+
+        elif i['class'][0] == 'code-box':
+            box_checker = []
+            code_box3 = i.find_all('span', {'class': 'code-box3'})
+
+            for j in code_box3:
+                box_checker.append(j.string)
+
+            words = i.get_text('').split()
+            for i, val in enumerate(words):
+                val = "".join(val.split())
+                if val == '$':
+                    words.remove(val)
+
+                elif val in box_checker:
+                    words[i] = f'`{val}`'
+
+                else:
+                    words[i] = val
+
+            out = ' '.join(words).strip()
+            output.append(f'<-{out}->')
+        
+        elif i['class'][0] == 'article-vid':
+            out = f"<media--{i.source['src'].split('/')[1]}>"
+            output.append(out)
+        
+        elif i['class'][0] =='article-img':
+            out = f"<media--{i.img['src'].split('/')[1]}>"
+            output.append(out)
+
+    # join the whole out list into a single variable
+    output = '\n\n'.join(output)
+    return output
+            
 while True:
     answers = prompt(purpose, style=style)
 
@@ -390,7 +447,6 @@ while True:
         post_data = {int(x): y for x, y in post_data.items()}
 
     if answers['item'] == "create post":
-        # inputs
         title = prompt(custom_title_input, style=style)['item']
 
         custom_desc = prompt(custom_desc, style=style)
@@ -398,14 +454,13 @@ while True:
             custom_desc = prompt(custom_desc_input, style=style)['item']
         else:
             custom_desc = 'no'
-
+            
         # the index file
         with open(os.path.join(base_dir, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
 
-        # find the most recent identifier number
-        tag = main_index.find_all('article')
-        post_class = int(tag[0]['class'][0]) + 1
+        # find the newest post class
+        post_class = max(post_data.keys())
 
         # generate filename
         filename = f"{''.join(random.choices(string.ascii_letters + string.digits, k=30))}.html"
@@ -442,23 +497,23 @@ while True:
         }
 
         # file selected
-        answers = prompt(post, style=style)
-        answer = answers['item']
-        answer = [y[1] for x, y in post_data.items() if y[0] == answer][0]
+        answer = prompt(post, style=style)['item']
+        chosen_file = [y[1] for x, y in post_data.items() if y[0] == answer][0]
 
         # read the selected file
-        with open(os.path.join(base_dir, answer), 'r') as file:
+        with open(os.path.join(base_dir, chosen_file), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
 
         # check if it's the index or a post that's being edited
-        if answer == 'index.html':
+        if chosen_file == 'index.html':
             function = prompt(index_edit, style=style)['item']
             
             if function == 'site_header':
                 index_header_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': f"Current header: {body.body.header.h1.a.string}\n  Enter new header:"
+                    'message': f"Current header:\n{body.body.header.h1.a.string}\n  Enter new header:",
+                    'validate': lambda i: len(i) > 2
                 }
                 header_string = prompt(index_header_input_edit, style=style)['item']
                 body.body.header.h1.a.string = header_string
@@ -466,6 +521,7 @@ while True:
                 # filter the posts for filenames
                 places = [y[1] for x, y in post_data.items() if x != 0]
 
+                # edit the posts
                 for i in places:
                     file = open(os.path.join(base_dir, i), 'r')
                     post = BeautifulSoup(file, features='html.parser')
@@ -496,16 +552,17 @@ while True:
                 index_desc_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': "Current description:\n{body.body.header.p.string}\n  Enter new description:"
+                    'message': f"Current description:\n{body.body.header.p.string}\n  Enter new description:",
+                    'validate': lambda i: len(i.split(' ')) > 3
                 }
-                desc_string = prompt(index_desc_input_edit, style=style)['item']
-                body.body.header.p.string = desc_string
+                body.body.header.p.string = prompt(index_desc_input_edit, style=style)['item']
 
             elif function == 'index_page_title':
                 index_title_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': f"Current index title: {body.head.title.string}\n  Enter new index page title:"
+                    'message': f"Current index title:\n{body.head.title.string}\n  Enter new index page title:",
+                    'validate': lambda i: len(i) > 2
                 }
                 title_string = prompt(index_title_input_edit, style=style)['item']
                 body.head.title.string = title_string
@@ -517,8 +574,7 @@ while True:
             # update the json last edited time of index
             post_data[0][2] = time.strftime('%Y/%m/%d %H:%M')
 
-            spinner = Halo(text='Updating Index...',
-                           spinner='pong', text_color='magenta')
+            spinner = Halo(text='Updating Index...', spinner='pong', text_color='magenta')
             spinner.start()
             time.sleep(4)
             spinner.stop_and_persist(text="Successfully edited the index file and associations", symbol='✔ ')  # ✔
@@ -537,64 +593,10 @@ while True:
             else:
                 custom_desc = custom_desc['item']
 
-            # find the identifier tag
-            tag = body.find_all('article')[0]
-            post_class = int(tag['class'][0])
-
-            # the whole list with the output data
-            output = []
-
-            # add the header to the out list
-            h1 = ' '.join(tag.find('h1').string.split())
-            output.append(h1)
-
-            # add the paragraphs to the out list
-            paragraphs = tag.find_all('p')
-            for i in paragraphs:
-                if i['class'][0] == 'article-p':
-                    if i.a is not None:
-                        i.a.replace_with(f"<:{i.a.string}--{i.a['href']}:>")
-
-                    if i.span is not None:
-                        i.span.replace_with(f"<~{i.span.string}~>")
-
-                    # to get rid of unnecessary white space
-                    p = ' '.join(i.get_text().split())
-                    output.append(p)
-
-                elif i['class'][0] == 'code-box':
-                    box_checker = []
-                    code_box3 = i.find_all('span', {'class': 'code-box3'})
-
-                    for j in code_box3:
-                        box_checker.append(j.string)
-
-                    words = i.get_text('').split()
-                    for i, val in enumerate(words):
-                        val = "".join(val.split())
-                        if val == '$':
-                            words.remove(val)
-
-                        elif val in box_checker:
-                            words[i] = f'`{val}`'
-
-                        else:
-                            words[i] = val
-
-                    out = ' '.join(words).strip()
-                    output.append(f'<-{out}->')
-                
-                elif i['class'][0] == 'article-vid':
-                    out = f"<media--{i.source['src'].split('/')[1]}>"
-                    output.append(out)
-                
-                elif i['class'][0] =='article-img':
-                    out = f"<media--{i.img['src'].split('/')[1]}>"
-                    output.append(out)
-
-            # join the whole out list into a single variable
-            output = '\n\n'.join(output)
-
+            # convert the html
+            output = post_structure(body)
+            post_class = [x for x, y in post_data.items() if y[0] == answer][0]
+            
             # open and write the temp file
             with open(os.path.join(file_dir, 'temp'), 'w') as file:
                 file.write(output)
@@ -604,8 +606,8 @@ while True:
             subprocess.run(["notepad", loc])
 
             # the heavy work
-            cleaned_input = separate_post('temp', post_class, title, answer)
-            body = index_post(custom_desc, cleaned_input[0], post_class, answer)
+            cleaned_input = separate_post('temp', post_class, title, chosen_file)
+            body = index_post(custom_desc, cleaned_input[0], post_class, chosen_file)
 
             # delete the temp
             os.remove(os.path.join(file_dir, 'temp'))

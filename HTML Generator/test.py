@@ -31,10 +31,42 @@
 #     soup.p.append(thing)
 #     soup.p.append(BeautifulSoup(f"<a href='thing.html' class='read'> Read more...</a>", features='html.parser'))
 # if larger, just split by '.' and join till the word count goes up to the amount
+from __future__ import print_function, unicode_literals
+
+import os
+import sys
+import time
+import json
+import random
+import string
+import shutil
+import subprocess
+from halo import Halo
+from bs4 import BeautifulSoup
+from tabulate import tabulate
+from tkinter import Tk, filedialog
+from PyInquirer import Validator, ValidationError
+from PyInquirer import style_from_dict, Token, prompt
+
+# custom_desc_input = {
+#     'type': 'input',
+#     'name': 'item',
+#     'message': "Enter description:",
+#     'validate': lambda i: len(i.split(' ')) > 10
+# }
+
+# style = style_from_dict({
+#     Token.QuestionMark: '#000',
+#     Token.Selected: '#535353',
+#     Token.Pointer: '#535353 bold',
+#     Token.Instruction: '#000',
+#     Token.Answer: '#535353',
+#     Token.Question: '#E47687',
+# })
 
 
-
-
+# answers = prompt(custom_desc_input, style=style)
+# print(answers)
 
 
 
@@ -83,10 +115,11 @@
 # print(code2)
 # line = [1, 2, 3, 4, 5, 6, 7, 8]
 
-# thing = {2 : 'thing',
-#          5 : 'thing'}
+thing = {2 : 'thing',
+         5 : 'thing'}
 
-
+thing = max(thing.keys())
+print(type(thing))
 # t = list(thing.keys())
 # for i in sorted(t, reverse=True):
 #     del line[i]
@@ -729,16 +762,16 @@ import os
 
 # endings = ('.png')
 # if thing.endswith(endings):
-# #     print('True')
-# # else:
-# #     print(False)
+# # #     print('True')
+# # # else:
+# # #     print(False)
 
-# from bs4 import BeautifulSoup
+# # from bs4 import BeautifulSoup
 
-i = BeautifulSoup("<p class='article-vid'><video controls=''><source src='media/some2.mp4' type='video/mp4'/></video></p>", features='html.parser')
-# soup.img['src'] = 'some.jpg'
-# print(soup)
-# cleaned_input = {0 : '<media>',
+# i = BeautifulSoup("<p class='article-vid'><video controls=''><source src='media/some2.mp4' type='video/mp4'/></video></p>", features='html.parser')
+# # soup.img['src'] = 'some.jpg'
+# # print(soup)
+# # cleaned_input = {0 : '<media>',
 #                  1 : '<media--some.png'}
 
 # media = {i: j for (i, j) in cleaned_input.items() if j.startswith('<media')}
@@ -775,9 +808,9 @@ i = BeautifulSoup("<p class='article-vid'><video controls=''><source src='media/
 #     if i not in thing2:
 #         print(i)
 # # print(thing + thing2)
-thing = [1, 3]
-thing2 = {}
-print(thing + list(thing2.values()))
+# thing = [1, 3]
+# thing2 = {}
+# print(thing + list(thing2.values()))
 
 
 # soup = BeautifulSoup('<img>', features='html.parser')
