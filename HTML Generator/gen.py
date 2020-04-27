@@ -331,7 +331,7 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
 
         x = len(cleaned_input[1].split())
 
-        if x > 70:
+        if x > 50:
             thing = ''
             parts = list(filter(None, cleaned_input[1].split('.')))
             for i in parts:
@@ -339,7 +339,7 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
                 x = 0
                 for i in thing.split():
                     x += 1
-                if x > 70:
+                if x > 50:
                     break
             soup = BeautifulSoup("<p class='index-p'></p>", features='html.parser')
             soup.p.append(thing)
@@ -348,11 +348,9 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
             body.article.append(soup)
 
         else:
-            soup = BeautifulSoup("<p class='index-p'></p>",
-                                 features='html.parser')
+            soup = BeautifulSoup("<p class='index-p'></p>", features='html.parser')
             soup.p.append(cleaned_input[1])
-            soup.p.append(BeautifulSoup(
-                f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
+            soup.p.append(BeautifulSoup(f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
             body.article.append(soup)
 
     elif custom_desc == 'keep before':
