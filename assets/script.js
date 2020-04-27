@@ -9,8 +9,8 @@ var nothing = {
     '-moz-transition': 'none',
     '-o-transition': 'none',
     '-webkit-transition': 'none',
-    'transition': 'none'   
-}
+    'transition': 'none'
+};
 
 $(document).ready(function () {
     let darkTheme = localStorage.getItem('theme') === 'dark';
@@ -35,7 +35,7 @@ $(document).ready(function () {
         $("body").addClass("static-body");
         $("h1").css(nothing);
         $("p").css(nothing);
-        
+        $('article').css(nothing);
     }
 
     $(".theme-switch").on("click", () => {
@@ -46,6 +46,8 @@ $(document).ready(function () {
         $("body").addClass("dynamic-body");
         $("h1").css(transition);
         $("p").css(transition);
+        $('article').css(transition);
         setTimeout(open_trans, 3000)
     });
 });
+

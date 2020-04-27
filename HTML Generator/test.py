@@ -47,6 +47,8 @@ from tabulate import tabulate
 from tkinter import Tk, filedialog
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
+from bs4 import BeautifulSoup
+import os
 
 # from cryptography.hazmat.backends import default_backend
 # from cryptography.hazmat.primitives import hashes
@@ -65,7 +67,7 @@ from PyInquirer import style_from_dict, Token, prompt
 # if digest2 == digest:
 #     print(True)
 # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-# import hashlib
+import hashlib
 
 # with open(os.path.join(__location__, 'input.txt'), 'rb') as file:
 #     first = file.read()
@@ -98,23 +100,23 @@ from PyInquirer import style_from_dict, Token, prompt
 #     'validate': lambda i: len(i.split(' ')) > 10
 # }
 
-style = style_from_dict({
-    Token.QuestionMark: '#000',
-    Token.Selected: '#535353',
-    Token.Pointer: '#535353 bold',
-    Token.Instruction: '#000',
-    Token.Answer: '#535353',
-    Token.Question: '#E47687',
-})
+# style = style_from_dict({
+#     Token.QuestionMark: '#000',
+#     Token.Selected: '#535353',
+#     Token.Pointer: '#535353 bold',
+#     Token.Instruction: '#000',
+#     Token.Answer: '#535353',
+#     Token.Question: '#E47687',
+# })
 
-post_doubt_edit = {
-    'type': 'confirm',
-    'name': 'item',
-    'message': "Are you sure to continue: [y/n]",
-}
+# post_doubt_edit = {
+#     'type': 'confirm',
+#     'name': 'item',
+#     'message': "Are you sure to continue: [y/n]",
+# }
 
-answers = prompt(post_doubt_edit, style=style)
-print(answers)
+# answers = prompt(post_doubt_edit, style=style)
+# print(answers)
 
 
 
@@ -175,7 +177,7 @@ print(answers)
 # print(line)
 # from datetime import datetime
 # from git import Repo
-# import os
+import os
 
 # os.chdir(r'E:/Code\Sites')
 
@@ -192,7 +194,7 @@ print(answers)
 # repo.index.commit(time)
 # origin = repo.remote('origin')
 # origin.push()
-# import curses
+import curses
 
 # screen = curses.initscr()
 # screen.addstr("Press any key...")
@@ -213,7 +215,7 @@ print(answers)
 # curses.endwin()
 
 
-# import os
+import os
 # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 # print(__location__)
@@ -269,7 +271,7 @@ print(answers)
 
 # # body = BeautifulSoup(body, features='html.parser')
 # # tag.replace_with(body)
-# # import os
+import os
 # # # print(soup)
 # # from bs4 import UnicodeDammit
 # # __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
@@ -298,9 +300,9 @@ print(answers)
 
 # # files = children + list(base_files)
 # # print(files)
-# import os
+import os
 # from bs4 import BeautifulSoup
-# import subprocess
+import subprocess
 
 
 
@@ -443,8 +445,6 @@ print(answers)
 # test = "".join(test.split())
 
 # print(test)
-from bs4 import BeautifulSoup
-import os
 
 # i = "<p>some <a href='some'>thing</a> cool</p>"
 # soup = BeautifulSoup(i, features='html.parser')
@@ -606,7 +606,7 @@ import os
 # # para = 'something'
 # # soup.p.string = para
 # # # print(soup
-# # import os
+import os
 
 # location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 # # files = [f for f in os.listdir(f'{loc}/../') + os.listdir(loc) if f.endswith('.html') and not f.startswith('index')]
@@ -624,7 +624,7 @@ import os
 # # article = body.find('article', {'class': num})
 # # article.decompose()
 # print(wrapper)
-# import time
+import time
 # from halo import Halo
 
 # spinner = Halo(text='Loading', spinner='dots', text_color='magenta')
@@ -676,13 +676,24 @@ import os
 #     print('None')
 # else:
 #     print("Not None")
-# import random
-# import string
+import random
+import string
 # filename = ''.join(random.choices(string.ascii_letters + string.digits, k=30))
 # print(filename)
-# import json
+import json
 
 
+some = """
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi sit voluptate deleniti hic amet
+    consequatur earum alias doloribus officiis nulla nam harum ad, expedita ullam accusamus mollitia modi
+    placeat sapiente. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate, earum esse.
+    Molestias quaerat fuga commodi, eligendi deserunt quidem numquam ratione culpa earum, sunt aspernatur
+    consequuntur suscipit adipisci.<a class="read" href="TUzBQiyw88TMwCLOxuQBdY1hRZngYh.html"> Read
+        more...</a></p>
+"""
+soup = BeautifulSoup(some, features='html.parser')
+soup.p.a.decompose()
+print(" ".join(soup.p.string.split()))
 # # {post_num: [last_edited, filename, date_created]}{
 # table ={"0": ["index", "index.html", "last_edited", "date_created"],
 #         "1": ["hello_v1", "hello_v1.html", "last_edited", "date_created"],
@@ -694,7 +705,7 @@ import os
 # places = [y[1] for x, y in dthing.items()]# if x != 0
 # print(dthing[2][1])
 
-# import time
+import time
 # thing = time.strftime('%Y/%m/%d %H:%M')
 # print(thing)
 # file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -705,7 +716,7 @@ import os
 
 
 # print(post_data[0])
-# import time
+import time
 # dict_key = [x for x, y in dthing.items() if x == 2][0]
 # dthing[dict_key][0] = time.strftime('%Y/%m/%d %H:%M')
 # dthing[5] = ['some', 'some', 'some']
@@ -724,7 +735,7 @@ import os
 # headers = 'class', 'title', 'last_edited', 'date_created', 'filename'
 # print(tabulate(table, headers, tablefmt="pretty"))
 
-# import sys
+import sys
 # from termcolor import colored, cprint
 
 # text = colored('Hello, World!', 'red', attrs=['reverse', 'blink'])

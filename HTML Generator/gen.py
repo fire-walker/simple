@@ -77,20 +77,6 @@ index_edit = {
 
 
 
-custom_desc_input_edit = {
-    'type': 'input',
-    'name': 'item',
-    'message': "Enter new description:",
-    'validate': lambda i: len(i.split(' ')) > 10
-}
-
-custom_title_input_edit = {
-    'type': 'input',
-    'name': 'item',
-    'message': "Enter new page title name:",
-    'validate': lambda i: len(i) > 2
-}
-
 custom_desc_input = {
     'type': 'input',
     'name': 'item',
@@ -333,7 +319,7 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
 
     # index file in congruence to the post
     body = BeautifulSoup(
-        f"<article class='{post_class}'></article>", features='html.parser')
+        f"<article class='{post_class} index-article'></article>", features='html.parser')
 
     # create the h1 tag  and delete it from the list
     header = BeautifulSoup(cleaned_input[0], features='html.parser')
@@ -355,14 +341,15 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
                     x += 1
                 if x > 70:
                     break
-            soup = BeautifulSoup('<p></p>', features='html.parser')
+            soup = BeautifulSoup("<p class='index-p'></p>", features='html.parser')
             soup.p.append(thing)
             soup.p.append(BeautifulSoup(
                 f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
             body.article.append(soup)
 
         else:
-            soup = BeautifulSoup('<p></p>', features='html.parser')
+            soup = BeautifulSoup("<p class='index-p'></p>",
+                                 features='html.parser')
             soup.p.append(cleaned_input[1])
             soup.p.append(BeautifulSoup(
                 f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
@@ -379,7 +366,7 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
 
     else:
         desc = BeautifulSoup(custom_desc, features='html.parser')
-        soup = BeautifulSoup('<p></p>', features='html.parser')
+        soup = BeautifulSoup("<p class='index-p'></p>", features='html.parser')
         soup.p.append(desc)
         soup.p.append(BeautifulSoup(
             f"<a href='{filename}' class='read'> Read more...</a>", features='html.parser'))
@@ -520,7 +507,7 @@ while True:
                 index_header_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': f"Current header:\n{body.body.header.h1.a.string}\n  Enter new header:",
+                    'message': f"Current header:\n  '{body.body.header.h1.a.string}'\n  Enter new header:",
                     'validate': lambda i: len(i) > 2
                 }
                 header_string = prompt(index_header_input_edit, style=style)['item']
@@ -560,7 +547,7 @@ while True:
                 index_desc_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': f"Current description:\n{body.body.header.p.string}\n  Enter new description:",
+                    'message': f"Current description:\n  '{body.body.header.p.string}'\n  Enter new description:",
                     'validate': lambda i: len(i.split(' ')) > 3
                 }
                 body.body.header.p.string = prompt(index_desc_input_edit, style=style)['item']
@@ -569,7 +556,7 @@ while True:
                 index_title_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': f"Current index title:\n{body.head.title.string}\n  Enter new index page title:",
+                    'message': f"Current index title:\n  '{body.head.title.string}'\n  Enter new index page title:",
                     'validate': lambda i: len(i) > 2
                 }
                 title_string = prompt(index_title_input_edit, style=style)['item']
@@ -588,22 +575,40 @@ while True:
             spinner.stop_and_persist(text="Successfully edited the index file and associations", symbol='✔ ')  # ✔
 
         else:
+            post_class = [x for x, y in post_data.items() if y[0] == answer][0]
+            
+            with open(os.path.join(base_dir, 'index.html'), 'r') as file:
+                index_file = BeautifulSoup(file, features='html.parser')
+            
             # format the inputs
             custom_title = prompt(custom_title_edit, style=style)
             if custom_title['item'] == 'yes':
+                custom_title_input_edit = {
+                    'type': 'input',
+                    'name': 'item',
+                    'message': f"Current title name:\n  '{body.head.title.string}'\n  Enter new page title name:",
+                    'validate': lambda i: len(i) > 2
+                }
                 title = prompt(custom_title_input_edit, style=style)['item']
             else:
                 title = body.head.title.string
 
             custom_desc = prompt(custom_desc_edit, style=style)
+            tag = index_file.find('article', class_=post_class)
+            tag.p.a.decompose()
             if custom_desc['item'] == 'yes':
+                custom_desc_input_edit = {
+                    'type': 'input',
+                    'name': 'item',
+                    'message': f"Current index description:\n  '{' '.join(tag.p.string.split())}'\n  Enter new description:",
+                    'validate': lambda i: len(i.split(' ')) > 10
+                }
                 custom_desc = prompt(custom_desc_input_edit, style=style)['item']
             else:
                 custom_desc = custom_desc['item']
 
             # convert the html
             output = post_structure(body)
-            post_class = [x for x, y in post_data.items() if y[0] == answer][0]
             
             # open and write the temp file
             with open(os.path.join(file_dir, 'temp'), 'w') as file:
