@@ -1,16 +1,6 @@
-var transition = {
-    '-moz-transition': 'color 0.2s ease-in',
-    '-o-transition': 'color 0.2s ease-in',
-    '-webkit-transition': 'color 0.2s ease-in',
-    'transition': 'color 0.2s ease-in'
-};
-
-var nothing = {
-    '-moz-transition': 'none',
-    '-o-transition': 'none',
-    '-webkit-transition': 'none',
-    'transition': 'none'
-};
+$(window).load(function () {
+    $("body").removeClass("preload");
+});
 
 $(document).ready(function () {
     let darkTheme = localStorage.getItem('theme') === 'dark';
@@ -30,24 +20,10 @@ $(document).ready(function () {
         }
     }
 
-    function open_trans() {
-        $("body").removeClass("dynamic-body");
-        $("body").addClass("static-body");
-        $("h1").css(nothing);
-        $("p").css(nothing);
-        $('article').css(nothing);
-    }
-
     $(".theme-switch").on("click", () => {
         darkTheme = !darkTheme;
         updateTheme();
         localStorage.setItem('theme', darkTheme ? 'dark' : 'light');
-        $("body").removeClass("static-body");
-        $("body").addClass("dynamic-body");
-        $("h1").css(transition);
-        $("p").css(transition);
-        $('article').css(transition);
-        setTimeout(open_trans, 3000)
     });
 });
 

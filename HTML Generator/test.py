@@ -683,17 +683,17 @@ import string
 import json
 
 
-some = """
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi sit voluptate deleniti hic amet
-    consequatur earum alias doloribus officiis nulla nam harum ad, expedita ullam accusamus mollitia modi
-    placeat sapiente. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate, earum esse.
-    Molestias quaerat fuga commodi, eligendi deserunt quidem numquam ratione culpa earum, sunt aspernatur
-    consequuntur suscipit adipisci.<a class="read" href="TUzBQiyw88TMwCLOxuQBdY1hRZngYh.html"> Read
-        more...</a></p>
-"""
-soup = BeautifulSoup(some, features='html.parser')
-soup.p.a.decompose()
-print(" ".join(soup.p.string.split()))
+# some = """
+# <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi sit voluptate deleniti hic amet
+#     consequatur earum alias doloribus officiis nulla nam harum ad, expedita ullam accusamus mollitia modi
+#     placeat sapiente. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Voluptate, earum esse.
+#     Molestias quaerat fuga commodi, eligendi deserunt quidem numquam ratione culpa earum, sunt aspernatur
+#     consequuntur suscipit adipisci.<a class="read" href="TUzBQiyw88TMwCLOxuQBdY1hRZngYh.html"> Read
+#         more...</a></p>
+# """
+# soup = BeautifulSoup(some, features='html.parser')
+# soup.p.a.decompose()
+# print(" ".join(soup.p.string.split()))
 # # {post_num: [last_edited, filename, date_created]}{
 # table ={"0": ["index", "index.html", "last_edited", "date_created"],
 #         "1": ["hello_v1", "hello_v1.html", "last_edited", "date_created"],
@@ -941,4 +941,27 @@ import sys
 # if thing == {}:
 #     print(True)
 # print(thing)
+
+from web_mage.web_mage import Job
+from web_mage.formats import IMG_FORMAT_CONTENT_LARGE
+
+formats = [IMG_FORMAT_CONTENT_LARGE]
+optim_job = Job(source=r"‪C:\Users\Ravindu\Pictures\Saved Pictures", dest=r"‪C:\Users\Ravindu\Pictures\Camera Roll", formats=formats)
+optim_job.run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

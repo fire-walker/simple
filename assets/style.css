@@ -13,8 +13,6 @@
 <media--neu.png>
 
 */
-
-
 /* general =================================*/
 :root {
     --hr: #d01a4d;
@@ -58,16 +56,28 @@
     --neu: 7px 7px 11px #080709, -7px -7px 11px #1e1d25;
 }
 
-.dynamic-body {
-    background-color: var(--background);
-    -moz-transition: background-color 0.2s ease-in;;
-    -o-transition: background-color 0.2s ease-in;;
-    -webkit-transition: background-color 0.2s ease-in;
-    transition: background-color 0.2s ease-in;
+body {
+    margin: 0;
+    padding: 0;
 }
 
-.static-body {
+.backy {
+    padding: 0 5px 10px 5px;
     background-color: var(--background);
+    -webkit-transition: background-color 0.3s ease-in;
+    -moz-transition: background-color 0.3s ease-in;
+    -ms-transition: background-color 0.3s ease-in;
+    -o-transition: background-color 0.3s ease-in;
+    transition: background-color 0.3s ease-in;
+}
+
+.preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+    transition: none !important;
+
 }
 
 
@@ -117,6 +127,11 @@ hr:before {
     border-radius: 8px;
     background: var(--article-back);
     box-shadow: var(--neu);
+    -webkit-transition: background 0.3s ease-in, box-shadow 0.3s ease-in;
+    -moz-transition: background.3s ease-in, box-shadow 0.3s ease-in;
+    -o-transition: background 0.3s ease-in, box-shadow 0.3s ease-in;
+    -ms-transition: background 0.3s ease-in, box-shadow 0.3s ease-in;
+    transition: background 0.3s ease-in, box-shadow 0.3s ease-in;
 }
 
 .wrapper {
@@ -137,10 +152,11 @@ hr:before {
 }
 
 .header a {
-    -moz-transition-duration: .4s;
-    -webkit-transition-duration: .4s;
-    -o-transition-duration: .4s;
-    transition-duration: .4s;
+    -webkit-transition: 0.3s ease-in;
+    -moz-transition: 0.3s ease-in;
+    -ms-transition: 0.3s ease-in;
+    -o-transition: 0.3s ease-in;
+    transition: 0.3s ease-in;
     text-decoration: none;
     color: var(--header);
     font-weight: 700px;
@@ -181,6 +197,11 @@ hr:before {
     padding: 0px 0 0 15px;
     margin: 20px 0 0 0;
     border-radius: 2px;
+    -webkit-transition: color 0.3s ease-in, border-color 0.3s ease-in;
+    -moz-transition: color 0.3s ease-in, border-color 0.3s ease-in;
+    -ms-transition: color 0.3s ease-in, border-color 0.3s ease-in;
+    -o-transition: color 0.3s ease-in, border-color 0.3s ease-in;
+    transition: color 0.3s ease-in, border-color 0.3s ease-in;
 }
 
 h1 {
@@ -189,6 +210,11 @@ h1 {
     font-size: 30px;
     color: var(--h1);
     font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
+    -webkit-transition: color 0.3s ease-in;
+    -moz-transition: color 0.3s ease-in;
+    -ms-transition: color 0.3s ease-in;
+    -o-transition: color 0.3s ease-in;
+    transition: color 0.3s ease-in;
 }
 
 .read {
@@ -223,9 +249,9 @@ img {
 
 /* article =================================*/
 .article-header {
-    padding-top: 10px;
+    padding-top: 15px;
     padding-left: 30px;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     margin: 0px;
     font-size: 25px;
     font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
@@ -338,10 +364,6 @@ img {
     article {
         margin-left: 20px;
         margin-right: 20px;
-    }
-
-    .article-header {
-        padding-left: 20px;
     }
 
     /* .dark-theme {
