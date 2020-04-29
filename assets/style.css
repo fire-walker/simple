@@ -343,8 +343,8 @@ img {
 
 @media (max-width:640px) {
     .index-article {
-        padding: 20px 15px 35px 20px;
-        margin: 40px 10px;
+        padding: 20px 15px 20px 20px;
+        margin: 40px 20px 40px 20px;
     }
 
     .index-p {
