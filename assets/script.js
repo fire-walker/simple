@@ -2,6 +2,7 @@ $(window).load(function () {
     $("body").removeClass("preload");
 });
 
+
 $(document).ready(function () {
     let darkTheme = localStorage.getItem('theme') === 'dark';
     updateTheme();
@@ -14,13 +15,12 @@ $(document).ready(function () {
     function updateTheme() {
         if (darkTheme) {
             $("body").addClass("dark-theme");
-
         } else {
             $("body").removeClass("dark-theme");
         }
     }
 
-    $(".theme-switch").on('click touch', () => {
+    $(".theme-switch").on("click", () => {
         darkTheme = !darkTheme;
         updateTheme();
         localStorage.setItem('theme', darkTheme ? 'dark' : 'light');
