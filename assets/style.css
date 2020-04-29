@@ -152,19 +152,19 @@ hr:before {
 }
 
 .header a {
-    -webkit-transition: 0.3s ease-in;
+    /* -webkit-transition: 0.3s ease-in;
     -moz-transition: 0.3s ease-in;
     -ms-transition: 0.3s ease-in;
     -o-transition: 0.3s ease-in;
-    transition: 0.3s ease-in;
+    transition: 0.3s ease-in; */
     text-decoration: none;
     color: var(--header);
     font-weight: 700px;
 }
 
-.header a:hover {
+/* .header a:hover {
     color: var(--header-h);
-}
+} */
 
 .header-p {
     text-align: center;
