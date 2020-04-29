@@ -162,7 +162,8 @@ hr:before {
     font-weight: 700px;
 }
 
-.header a:hover {
+.header a:hover,
+.header a:active {
     color: var(--header-h);
 }
 
@@ -177,7 +178,8 @@ hr:before {
     font-family: 'Lato', sans-serif;
 }
 
-.index-hr:before {
+.index-hr:before,
+.index-hr:active {
     font-size: 2em;
     padding: 0.5em 1em;
     font-weight: lighter;
@@ -224,7 +226,8 @@ h1 {
     color: #05927b;
 }
 
-.read:hover {
+.read:hover,
+.read:active {
     color: #03584a;
 }
 
@@ -267,7 +270,8 @@ img {
 
 }
 
-.article-header a:hover {
+.article-header a:hover,
+.article-header a:active {
     color: var(--article-header-h);
 }
 
@@ -325,7 +329,8 @@ img {
     margin-right: 30px;
 }
 
-.page-hr:before {
+.page-hr:before,
+.page-hr:active {
     padding: 0.5em 1em;
     font-weight: lighter;
     font-family: Helvetica Neue;
