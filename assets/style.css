@@ -146,12 +146,10 @@ hr:before {
     padding-left: 0px;
     padding-right: 0px;
     margin: 0px;
-    font-size: 30px;
     text-align: center;
-    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
 }
 
-.header a {
+.thing {
     -webkit-transition: 0.3s ease-in;
     -moz-transition: 0.3s ease-in;
     -ms-transition: 0.3s ease-in;
@@ -160,10 +158,16 @@ hr:before {
     text-decoration: none;
     color: var(--header);
     font-weight: 700px;
+    border: none;
+    background-color: var(--background);
+    font-size: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
 }
 
-.header a:hover,
-.header a:active {
+.thing:hover,
+.thing:active {
     color: var(--header-h);
 }
 
