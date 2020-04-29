@@ -20,7 +20,7 @@ $(document).ready(function () {
         }
     }
 
-    $(".theme-switch").on("click", () => {
+    $(".theme-switch").on("click touchstart", () => {
         darkTheme = !darkTheme;
         updateTheme();
         localStorage.setItem('theme', darkTheme ? 'dark' : 'light');
