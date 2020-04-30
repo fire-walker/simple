@@ -149,7 +149,7 @@ hr:before {
     text-align: center;
 }
 
-.thing {
+.theme-switch {
     -webkit-transition: 0.3s ease-in;
     -moz-transition: 0.3s ease-in;
     -ms-transition: 0.3s ease-in;
@@ -166,8 +166,8 @@ hr:before {
     font-family: Lora, 'Palatino Linotype', 'Book Antiqua', 'New York', 'DejaVu serif', serif;
 }
 
-.thing:hover,
-.thing:active {
+.theme-switch:hover,
+.theme-switch:active {
     color: var(--header-h);
 }
 

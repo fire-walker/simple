@@ -16,90 +16,91 @@ from tkinter import Tk, filedialog
 from PyInquirer import Validator, ValidationError
 from PyInquirer import style_from_dict, Token, prompt
 
+class Messages:
+    def __init__(self):
+        self.style = style_from_dict({
+            Token.QuestionMark: '#000',
+            Token.Selected: '#535353',
+            Token.Pointer: '#535353 bold',
+            Token.Instruction: '#000',
+            Token.Answer: '#535353',
+            Token.Question: '#E47687',
+        })
 
-style = style_from_dict({
-    Token.QuestionMark: '#000',
-    Token.Selected: '#535353',
-    Token.Pointer: '#535353 bold',
-    Token.Instruction: '#000',
-    Token.Answer: '#535353',
-    Token.Question: '#E47687',
-})
+        self.purpose = {
+            'type': 'list',
+            'name': 'item',
+            'message': "What's your purpose?",
+            'choices': ['Create Post', 'Edit Post', 'Delete Post', 'View Post Data'],
+            'filter': lambda val: val.lower()
+        }
 
-purpose = {
-    'type': 'list',
-    'name': 'item',
-    'message': "What's your purpose?",
-    'choices': ['Create Post', 'Edit Post', 'Delete Post', 'View Post Data'],
-    'filter': lambda val: val.lower()
-}
+        self.custom_desc_edit = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Would you like to alter the index description",
+            'choices': ['No', 'Yes', 'Keep Before'],
+            'filter': lambda val: val.lower()
+        }
 
-custom_desc_edit = {
-    'type': 'list',
-    'name': 'item',
-    'message': "Would you like to alter the index description",
-    'choices': ['No', 'Yes', 'Keep Before'],
-    'filter': lambda val: val.lower()
-}
+        self.custom_title_edit = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Would you like to alter the page title",
+            'choices': ['No', 'Yes'],
+            'filter': lambda val: val.lower()
+        }
 
-custom_title_edit = {
-    'type': 'list',
-    'name': 'item',
-    'message': "Would you like to alter the page title",
-    'choices': ['No', 'Yes'],
-    'filter': lambda val: val.lower()
-}
+        self.custom_desc = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Would you like to alter the index description",
+            'choices': ['No', 'Yes'],
+            'filter': lambda val: val.lower()
+        }
 
-custom_desc = {
-    'type': 'list',
-    'name': 'item',
-    'message': "Would you like to alter the index description",
-    'choices': ['No', 'Yes'],
-    'filter': lambda val: val.lower()
-}
+        self.filename_edit = {
+            'type': 'list',
+            'name': 'item',
+            'message': "Would you like to alter the page filename",
+            'choices': ['No', 'Yes'],
+            'filter': lambda val: val.lower()
+        }
 
-filename_edit = {
-    'type': 'list',
-    'name': 'item',
-    'message': "Would you like to alter the page filename",
-    'choices': ['No', 'Yes'],
-    'filter': lambda val: val.lower()
-}
-
-index_edit = {
-    'type': 'list',
-    'name': 'item',
-    'message': "What would you like to edit?",
-    'choices': ['Site_header', 'Site_description', 'Index_page_title'],
-    'filter': lambda val: val.lower()
-}
-
-
-
-
-custom_desc_input = {
-    'type': 'input',
-    'name': 'item',
-    'message': "Enter description:",
-    'validate': lambda i: len(i.split(' ')) > 10
-}
-
-custom_title_input = {
-    'type': 'input',
-    'name': 'item',
-    'message': "Enter page title name:",
-    'validate': lambda i: len(i) > 1
-}
+        self.index_edit = {
+            'type': 'list',
+            'name': 'item',
+            'message': "What would you like to edit?",
+            'choices': ['Site_header', 'Site_description', 'Index_page_title'],
+            'filter': lambda val: val.lower()
+        }
 
 
 
-post_doubt_edit = {
-    'type': 'confirm',
-    'name': 'item',
-    'message': "Are you sure to continue: [y/n]",
-}
+
+        self.custom_desc_input = {
+            'type': 'input',
+            'name': 'item',
+            'message': "Enter description:",
+            'validate': lambda i: len(i.split(' ')) > 10
+        }
+
+        self.custom_title_input = {
+            'type': 'input',
+            'name': 'item',
+            'message': "Enter page title name:",
+            'validate': lambda i: len(i) > 1
+        }
 
 
+
+        self.post_doubt_edit = {
+            'type': 'confirm',
+            'name': 'item',
+            'message': "Are you sure to continue: [y/n]",
+        }
+
+message = Messages()
 
 file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
@@ -433,18 +434,19 @@ def post_structure(body):
     return output
             
 while True:
-    answers = prompt(purpose, style=style)
+    answers = prompt(message.purpose, style=message.style)
 
     with open(os.path.join(base_dir, 'assets/post_data.json'), "r") as file:
         post_data = json.load(file)
         post_data = {int(x): y for x, y in post_data.items()}
 
     if answers['item'] == "create post":
-        title = prompt(custom_title_input, style=style)['item']
+        title = prompt(message.custom_title_input, style=message.style)['item']
 
-        custom_desc = prompt(custom_desc, style=style)
+        custom_desc = prompt(message.custom_desc, style=message.style)
         if custom_desc['item'] == 'yes':
-            custom_desc = prompt(custom_desc_input, style=style)['item']
+            custom_desc = prompt(message.custom_desc_input,
+                                 style=message.style)['item']
         else:
             custom_desc = 'no'
             
@@ -490,7 +492,7 @@ while True:
         }
 
         # file selected
-        answer = prompt(post, style=style)['item']
+        answer = prompt(message.post, style=message.style)['item']
         chosen_file = [y[1] for x, y in post_data.items() if y[0] == answer][0]
 
         # read the selected file
@@ -499,7 +501,7 @@ while True:
 
         # check if it's the index or a post that's being edited
         if chosen_file == 'index.html':
-            function = prompt(index_edit, style=style)['item']
+            function = prompt(message.index_edit, style=message.style)['item']
             
             if function == 'site_header':
                 index_header_input_edit = {
@@ -508,7 +510,7 @@ while True:
                     'message': f"Current header:\n  '{body.body.header.h1.a.string}'\n  Enter new header:",
                     'validate': lambda i: len(i) > 2
                 }
-                header_string = prompt(index_header_input_edit, style=style)['item']
+                header_string = prompt(message.index_header_input_edit, style=message.style)['item']
                 body.body.header.h1.a.string = header_string
 
                 # filter the posts for filenames
@@ -548,7 +550,7 @@ while True:
                     'message': f"Current description:\n  '{body.body.header.p.string}'\n  Enter new description:",
                     'validate': lambda i: len(i.split(' ')) > 3
                 }
-                body.body.header.p.string = prompt(index_desc_input_edit, style=style)['item']
+                body.body.header.p.string = prompt(message.index_desc_input_edit, style=message.style)['item']
 
             elif function == 'index_page_title':
                 index_title_input_edit = {
@@ -557,7 +559,7 @@ while True:
                     'message': f"Current index title:\n  '{body.head.title.string}'\n  Enter new index page title:",
                     'validate': lambda i: len(i) > 2
                 }
-                title_string = prompt(index_title_input_edit, style=style)['item']
+                title_string = prompt(message.index_title_input_edit, style=message.style)['item']
                 body.head.title.string = title_string
 
             # save the modifications
@@ -579,7 +581,7 @@ while True:
                 index_file = BeautifulSoup(file, features='html.parser')
             
             # format the inputs
-            custom_title = prompt(custom_title_edit, style=style)
+            custom_title = prompt(message.custom_title_edit, style=message.style)
             if custom_title['item'] == 'yes':
                 custom_title_input_edit = {
                     'type': 'input',
@@ -587,11 +589,11 @@ while True:
                     'message': f"Current title name:\n  '{body.head.title.string}'\n  Enter new page title name:",
                     'validate': lambda i: len(i) > 2
                 }
-                title = prompt(custom_title_input_edit, style=style)['item']
+                title = prompt(message.custom_title_input_edit, style=message.style)['item']
             else:
                 title = body.head.title.string
 
-            custom_desc = prompt(custom_desc_edit, style=style)
+            custom_desc = prompt(message.custom_desc_edit, style=message.style)
             tag = index_file.find('article', class_=post_class)
             tag.p.a.decompose()
             if custom_desc['item'] == 'yes':
@@ -601,7 +603,7 @@ while True:
                     'message': f"Current index description:\n  '{' '.join(tag.p.string.split())}'\n  Enter new description:",
                     'validate': lambda i: len(i.split(' ')) > 10
                 }
-                custom_desc = prompt(custom_desc_input_edit, style=style)['item']
+                custom_desc = prompt(message.custom_desc_input_edit, style=message.style)['item']
             else:
                 custom_desc = custom_desc['item']
 
@@ -624,7 +626,7 @@ while True:
                     output_hash = hashlib.sha3_512(output_b).hexdigest()
                     
                 if output_hash == output_hash_before:
-                    doubt = prompt(post_doubt_edit, style=style)['item']
+                    doubt = prompt(message.post_doubt_edit, style=message.style)['item']
                     if doubt is False:
                         continue
                     else:
@@ -698,7 +700,7 @@ while True:
         }
 
         # file selected
-        answer = prompt(post, style=style)['item']
+        answer = prompt(message.post, style=message.style)['item']
         post_num = [x for x, y in post_data.items() if y[0] == answer][0]
 
         # delete the file, images and info from json
