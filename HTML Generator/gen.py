@@ -26,7 +26,6 @@ class Messages:
             Token.Answer: '#535353',
             Token.Question: '#E47687',
         })
-
         self.purpose = {
             'type': 'list',
             'name': 'item',
@@ -34,7 +33,6 @@ class Messages:
             'choices': ['Create Post', 'Edit Post', 'Delete Post', 'View Post Data'],
             'filter': lambda val: val.lower()
         }
-
         self.custom_desc_edit = {
             'type': 'list',
             'name': 'item',
@@ -42,7 +40,6 @@ class Messages:
             'choices': ['No', 'Yes', 'Keep Before'],
             'filter': lambda val: val.lower()
         }
-
         self.custom_title_edit = {
             'type': 'list',
             'name': 'item',
@@ -50,7 +47,6 @@ class Messages:
             'choices': ['No', 'Yes'],
             'filter': lambda val: val.lower()
         }
-
         self.custom_desc = {
             'type': 'list',
             'name': 'item',
@@ -58,7 +54,6 @@ class Messages:
             'choices': ['No', 'Yes'],
             'filter': lambda val: val.lower()
         }
-
         self.filename_edit = {
             'type': 'list',
             'name': 'item',
@@ -66,7 +61,6 @@ class Messages:
             'choices': ['No', 'Yes'],
             'filter': lambda val: val.lower()
         }
-
         self.index_edit = {
             'type': 'list',
             'name': 'item',
@@ -76,34 +70,28 @@ class Messages:
         }
 
 
-
-
         self.custom_desc_input = {
             'type': 'input',
             'name': 'item',
             'message': "Enter description:",
             'validate': lambda i: len(i.split(' ')) > 10
         }
-
         self.custom_title_input = {
             'type': 'input',
             'name': 'item',
             'message': "Enter page title name:",
             'validate': lambda i: len(i) > 1
         }
-
-
-
         self.post_doubt_edit = {
             'type': 'confirm',
             'name': 'item',
             'message': "Are you sure to continue: [y/n]",
         }
+        
 
+        self.file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        message.base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 message = Messages()
-
-file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-base_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
 
 # video and image chooser
 def tk_get_file_path():
@@ -127,9 +115,7 @@ def tk_get_file_path():
 
 # function to create and edit the separate post file
 def separate_post(input_file, post_class, title, filename):
-    file_dir = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    
-    with open(os.path.join(file_dir, input_file), 'r') as file:
+    with open(os.path.join(message.file_dir, input_file), 'r') as file:
         input_data = file.readlines()
 
     # clean the input data
@@ -186,7 +172,7 @@ def separate_post(input_file, post_class, title, filename):
             for i in files:
                 media_name = os.path.basename(i)
                 media_files.append(media_name)
-                shutil.copyfile(i, os.path.join(file_dir, f"../media/{media_name}"))
+                shutil.copyfile(i, os.path.join(message.file_dir, f"../media/{media_name}"))
                 
                 if media_name.endswith(image_endings):
                     soup = BeautifulSoup('<p><img>', features='html.parser')
@@ -294,7 +280,7 @@ def separate_post(input_file, post_class, title, filename):
             body.article.append(y)
         
     # open the template source file
-    with open(os.path.join(file_dir, '../assets/template.html'), 'r') as file:
+    with open(os.path.join(message.file_dir, '../assets/template.html'), 'r') as file:
         soup = BeautifulSoup(file, features="html.parser")
 
     # find the insertion location of the template
@@ -308,16 +294,13 @@ def separate_post(input_file, post_class, title, filename):
     soup.head.insert(0, title_soup)
 
     # save the edited file
-    with open(os.path.join(file_dir, '../{}' .format(filename)), 'w') as file:
+    with open(os.path.join(message.file_dir, '../{}' .format(filename)), 'w') as file:
         file.write(str(soup))
     
     return cleaned_output, media_files
 
 # edit or insert to the index page
 def index_post(custom_desc, cleaned_input, post_class, filename):
-    base_dir = os.path.realpath(os.path.join(
-        os.getcwd(), os.path.dirname(os.path.dirname(__file__))))
-
     # index file in congruence to the post
     body = BeautifulSoup(
         f"<article class='{post_class} index-article'></article>", features='html.parser')
@@ -355,7 +338,7 @@ def index_post(custom_desc, cleaned_input, post_class, filename):
             body.article.append(soup)
 
     elif custom_desc == 'keep before':
-        with open(os.path.join(base_dir, 'index.html'), 'r') as file:
+        with open(os.path.join(message.base_dir, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
 
         tag = main_index.find('article', {'class': post_class})
@@ -436,7 +419,7 @@ def post_structure(body):
 while True:
     answers = prompt(message.purpose, style=message.style)
 
-    with open(os.path.join(base_dir, 'assets/post_data.json'), "r") as file:
+    with open(os.path.join(message.base_dir, 'assets/post_data.json'), "r") as file:
         post_data = json.load(file)
         post_data = {int(x): y for x, y in post_data.items()}
 
@@ -451,7 +434,7 @@ while True:
             custom_desc = 'no'
             
         # the index file
-        with open(os.path.join(base_dir, 'index.html'), 'r') as file:
+        with open(os.path.join(message.base_dir, 'index.html'), 'r') as file:
             main_index = BeautifulSoup(file, features="html.parser")
 
         # find the newest post class
@@ -472,7 +455,7 @@ while True:
         tag.insert(0, body)
 
         # save the new edited source file
-        with open(os.path.join(file_dir, '../index.html'), 'w') as file:
+        with open(os.path.join(message.file_dir, '../index.html'), 'w') as file:
             file.write(str(main_index))
             
         spinner = Halo(text='Creating post...',spinner='pong', text_color='magenta')
@@ -496,7 +479,7 @@ while True:
         chosen_file = [y[1] for x, y in post_data.items() if y[0] == answer][0]
 
         # read the selected file
-        with open(os.path.join(base_dir, chosen_file), 'r') as file:
+        with open(os.path.join(message.base_dir, chosen_file), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
 
         # check if it's the index or a post that's being edited
@@ -518,13 +501,13 @@ while True:
 
                 # edit the posts
                 for i in places:
-                    file = open(os.path.join(base_dir, i), 'r')
+                    file = open(os.path.join(message.base_dir, i), 'r')
                     post = BeautifulSoup(file, features='html.parser')
                     file.close()
 
                     post.body.header.h1.a.string = header_string
 
-                    file = open(os.path.join(base_dir, i), 'w')
+                    file = open(os.path.join(message.base_dir, i), 'w')
                     file.write(str(post))
                     file.close()
 
@@ -533,13 +516,13 @@ while True:
                     post_data[dict_key][2] = time.strftime('%Y/%m/%d %H:%M')
                     
                 # edit the template file
-                file = open(os.path.join(base_dir, 'assets/template.html'), 'r')
+                file = open(os.path.join(message.base_dir, 'assets/template.html'), 'r')
                 post = BeautifulSoup(file, features='html.parser')
                 file.close()
 
                 post.body.header.h1.a.string = header_string
 
-                file = open(os.path.join(base_dir, 'assets/template.html'), 'w')
+                file = open(os.path.join(message.base_dir, 'assets/template.html'), 'w')
                 file.write(str(post))
                 file.close()
 
@@ -563,7 +546,7 @@ while True:
                 body.head.title.string = title_string
 
             # save the modifications
-            with open(os.path.join(base_dir, 'index.html'), 'w') as file:
+            with open(os.path.join(message.base_dir, 'index.html'), 'w') as file:
                 file.write(str(body))
 
             # update the json last edited time of index
@@ -577,7 +560,7 @@ while True:
         else:
             post_class = [x for x, y in post_data.items() if y[0] == answer][0]
             
-            with open(os.path.join(base_dir, 'index.html'), 'r') as file:
+            with open(os.path.join(message.base_dir, 'index.html'), 'r') as file:
                 index_file = BeautifulSoup(file, features='html.parser')
             
             # format the inputs
@@ -611,17 +594,17 @@ while True:
             output = post_structure(body)
             
             # open and write the temp file
-            with open(os.path.join(file_dir, 'temp'), 'w') as file:
+            with open(os.path.join(message.file_dir, 'temp'), 'w') as file:
                 file.write(output)
 
-            with open(os.path.join(file_dir, 'temp'), 'w') as file:
+            with open(os.path.join(message.file_dir, 'temp'), 'w') as file:
                 output_b = file.read()
                 output_hash_before = hashlib.sha3_512(output_b).hexdigest()  
                       
             while True:
-                loc = os.path.join(file_dir, 'temp')
+                loc = os.path.join(message.file_dir, 'temp')
 
-                with open(os.path.join(file_dir, 'temp'), 'rb') as file:
+                with open(os.path.join(message.file_dir, 'temp'), 'rb') as file:
                     output_b = file.read()
                     output_hash = hashlib.sha3_512(output_b).hexdigest()
                     
@@ -639,10 +622,10 @@ while True:
             body = index_post(custom_desc, cleaned_input[0], post_class, chosen_file)
 
             # delete the temp
-            os.remove(os.path.join(file_dir, 'temp'))
+            os.remove(os.path.join(message.file_dir, 'temp'))
 
             # open up the index file for modifications
-            with open(os.path.join(base_dir, 'index.html'), 'r') as file:
+            with open(os.path.join(message.base_dir, 'index.html'), 'r') as file:
                 index_whole = BeautifulSoup(file, features="html.parser")
 
             # find and kill the outdated reference
@@ -667,7 +650,7 @@ while True:
                     x += 1
 
             # save the modifications
-            with open(os.path.join(base_dir, 'index.html'), 'w') as file:
+            with open(os.path.join(message.base_dir, 'index.html'), 'w') as file:
                 file.write(str(index_whole))
             
             # update the json last edited time
@@ -680,7 +663,7 @@ while True:
             # checking the media files and deleting if necessary
             for i in prev_media:
                 if i not in cleaned_input[1]:
-                    os.remove(os.path.join(base_dir, f'media/{i}'))
+                    os.remove(os.path.join(message.base_dir, f'media/{i}'))
                     
 
             spinner = Halo(text='Editing post...', spinner='pong', text_color='magenta')
@@ -704,13 +687,13 @@ while True:
         post_num = [x for x, y in post_data.items() if y[0] == answer][0]
 
         # delete the file, images and info from json
-        os.remove(os.path.join(base_dir, post_data[post_num][1]))
+        os.remove(os.path.join(message.base_dir, post_data[post_num][1]))
         
         for i in post_data[post_num][4]:
-            os.remove(os.path.join(base_dir, f'media/{i}'))
+            os.remove(os.path.join(message.base_dir, f'media/{i}'))
 
         # read the index file
-        with open(os.path.join(base_dir, 'index.html'), 'r') as file:
+        with open(os.path.join(message.base_dir, 'index.html'), 'r') as file:
             body = BeautifulSoup(file, features='html.parser')
 
         # delete the index entry
@@ -718,7 +701,7 @@ while True:
         article.decompose()
 
         # save the modifications
-        with open(os.path.join(base_dir, 'index.html'), 'w') as file:
+        with open(os.path.join(message.base_dir, 'index.html'), 'w') as file:
             file.write(str(body))
             
         post_data = {x : y for x, y in post_data.items() if x != post_num}
@@ -744,7 +727,7 @@ while True:
     print('='*50 + '\n\n')
     time.sleep(2)
 
-    with open(os.path.join(base_dir, 'assets/post_data.json'), "w") as file:
+    with open(os.path.join(message.base_dir, 'assets/post_data.json'), "w") as file:
         json.dump(post_data, file)
 
 
