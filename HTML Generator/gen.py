@@ -428,8 +428,7 @@ while True:
 
         custom_desc = prompt(message.custom_desc, style=message.style)
         if custom_desc['item'] == 'yes':
-            custom_desc = prompt(message.custom_desc_input,
-                                 style=message.style)['item']
+            custom_desc = prompt(message.custom_desc_input, style=message.style)['item']
         else:
             custom_desc = 'no'
             
@@ -490,11 +489,11 @@ while True:
                 index_header_input_edit = {
                     'type': 'input',
                     'name': 'item',
-                    'message': f"Current header:\n  '{body.body.header.h1.a.string}'\n  Enter new header:",
+                    'message': f"Current header:\n  '{body.body.header.h1.button.span.string}'\n  Enter new header:",
                     'validate': lambda i: len(i) > 2
                 }
                 header_string = prompt(message.index_header_input_edit, style=message.style)['item']
-                body.body.header.h1.a.string = header_string
+                body.body.header.h1.button.span.string = header_string
 
                 # filter the posts for filenames
                 places = [y[1] for x, y in post_data.items() if x != 0]
@@ -520,7 +519,7 @@ while True:
                 post = BeautifulSoup(file, features='html.parser')
                 file.close()
 
-                post.body.header.h1.a.string = header_string
+                body.body.header.h1.button.span.string = header_string
 
                 file = open(os.path.join(message.base_dir, 'assets/template.html'), 'w')
                 file.write(str(post))
