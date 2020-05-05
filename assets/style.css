@@ -260,7 +260,7 @@ img {
 /* article =================================*/
 .article-header {
     padding-top: 15px;
-    padding-left: 30px;
+    padding-left: 20px;
     padding-bottom: 15px;
     margin: 0px;
     font-size: 25px;
@@ -332,8 +332,8 @@ img {
 
 .article-body article {
     padding-bottom: 20px;
-    margin-left: 30px;
-    margin-right: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .page-hr:before,
@@ -374,13 +374,13 @@ img {
     }
 
     article {
-        margin-left: 20px;
-        margin-right: 20px;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
-    /* .dark-theme {
+    .dark-theme {
         --background: #131416;
-    } */
+    }
 
     .backy {
         -webkit-transition: none;
@@ -420,5 +420,9 @@ img {
         -ms-transition: none;
         -o-transition: none;
         transition: none;
+    }
+
+    .article-header {
+        padding-bottom: 40px;
     }
 }
