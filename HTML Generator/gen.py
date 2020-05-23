@@ -733,6 +733,10 @@ while True:
 # ===================goals/problems===================
 # make a site refresh thing, where the title, header and paras are kept but the template is updated
 # error checking, checksums, title matches
+# option to create a post but no index reference
+# option to select a post as a link for on-site links
+
+
 
 # post_data = {post_num: [page_title, filename.html, last_edited, date_created, media_linked]}
  
