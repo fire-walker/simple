@@ -4,6 +4,7 @@ Lorem ipsum dolor sit amet consectetur adipisicing elit. Quasi sit voluptate del
 
 <-docker fully `run` static-site->
 
+
 Exercitationem cupiditate labore <:debitis--https://www.google.com:> expedita <~officiis~> asperiores sapiente numquam? Hic ut, a debitis quia nobis doloremque sit ipsam impedit temporibus aperiam earum. Molestias illum unde praesentium veritatis ut optio minima deleniti! Alias porro laboriosam vel. Quibusdam illum, nihil illo iste neque eveniet corrupti eligendi eaque voluptates nemo? Repellat veniam iusto cum magnam et nesciunt laborum temporibus atque, quo perferendis repudiandae magni minus quos tenetur assumenda corrupti natus non, reprehenderit ducimus molestias similique cumque.
 
 <-some `do` other-thing->

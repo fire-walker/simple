@@ -114,8 +114,8 @@ def tk_get_file_path():
     return file_path
 
 # function to create and edit the separate post file
-def separate_post(input_file, post_class, title, filename):
-    with open(os.path.join(message.file_dir, input_file), 'r') as file:
+def separate_post(post_class, title, filename):
+    with open(os.path.join(message.file_dir, 'input.txt'), 'r') as file:
         input_data = file.readlines()
 
     # clean the input data
@@ -443,7 +443,7 @@ while True:
         filename = f"{''.join(random.choices(string.ascii_letters + string.digits, k=30))}.html"
         
         # the heavy work
-        cleaned_input = separate_post('input.txt', post_class, title, filename)
+        cleaned_input = separate_post(post_class, title, filename)
         body = index_post(custom_desc, cleaned_input[0], post_class, filename)
 
         # update the json of the post creation
